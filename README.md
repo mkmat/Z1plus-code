@@ -23,3 +23,20 @@ or
 
     perl ./extract-backbone.pl <lammps-data-file> <lammps-dump-trajectory>
 
+## How to cite the Z1+ code?
+
+    M. Kroger, J. D. Dietz, R. S. Hoy and C. Luap,
+    The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems,
+    Comput. Phys. Commun. 283 (2023) 108567. DOI 10.1016/j.cpc.2022.108567
+
+or if you are using bibtex:
+
+    @article{Z1+,
+     author = {M. Kr"oger and J. D. Dietz and R. S. Hoy and C. Luap},
+     title = {The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems},
+     journal = {Comput. Phys. Commun.},
+     volume = {283},
+     pages = {108567},
+     year = {2023},
+     doi = {10.1016/j.cpc.2022.108567}
+    }
