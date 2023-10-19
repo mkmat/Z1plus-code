@@ -20,6 +20,22 @@ For user's convenience the script furthermore creates a file
 backbone-info.txt. For each chain molecule (chain number, number of atoms) 
 it provides a list of consecutively bonded original atom ids that form
 the linear chain. 
+
+Please cite the related publication if you make use of this script:
+
+M. Kroger, J. D. Dietz, R. S. Hoy and C. Luap,
+The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems,
+Comput. Phys. Commun. 283 (2023) 108567. DOI :10.1016/j.cpc.2022.108567 
+
+@article{MKroger2023-283,
+ author = {M. Kr"oger and J. D. Dietz and R. S. Hoy and C. Luap},
+ title = {The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems},
+ journal = {Comput. Phys. Commun.},
+ volume = {283},
+ pages = {108567},
+ year = {2023}, 
+ doi = {10.1016/j.cpc.2022.108567}
+}
 EOF
 exit;
 }; 
