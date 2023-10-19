@@ -7,3 +7,17 @@ Here we collect questions, answers, and additional scripts that may be useful fo
 
 ## How to extract linear backbones from fully atomistic LAMMPS models 
 
+Question: I am simulating atomistically detailed PMMA via LAMMPS, and have saved both a LAMMPS data file and a LAMMPS dump trajectory. Z1+ crashes as the LAMMPS files carry branched structures. How to make it work? 
+
+Answer: I created a script that automatically recognizes and extracts the linear backbones from your LAMMPS data file, and saves the linear conformation as Z1-formatted file config.Z1. The Z1+ code can then be directly applied to config.Z1. If you have both a LAMMPS data file and LAMMPS dump trajectory for the same system, this script creates a Z1-formatted trajectory file. The script is available for download in the scripts folder. Call it via
+
+    perl ./extract-backbone.pl
+
+or 
+
+    perl ./extract-backbone.pl <lammps-data-file>
+
+or
+
+    perl ./extract-backbone.pl <lammps-data-file> <lammps-dump-trajectory>
+
