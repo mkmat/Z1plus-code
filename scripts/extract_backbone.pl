@@ -4,7 +4,7 @@ sub USAGE { print<<EOF;
 use as:\n 
 perl $0 <lammps-data-file> [<lammps-dump-trajectory>]
 
-(c) mk@mat.ethz.ch 29 oct 2023
+(c) mk@mat.ethz.ch 1 nov 2023
 
 This software operates on a lammps data file and returns config.Z1, 
 a Z1-formatted file that can be used with Z1+. This script identifies the
@@ -19,14 +19,14 @@ backbone-info.txt. For each chain molecule (chain number, number of atoms)
 it provides a list of consecutively bonded original atom ids that form
 the linear chain. 
 
-Please cite the related publication DOI :10.1016/j.cpc.2022.108567 if you make use of this script: 
+Please cite the related publication DOI 10.1016/j.cpc.2022.108567 if you make use of this script: 
 
 M. Kroger, J. D. Dietz, R. S. Hoy and C. Luap, 
 The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems,
 Comput. Phys. Commun. 283 (2023) 108567.
 
 \@article{Z1+,
- author = {M. Kr\"oger and J. D. Dietz and R. S. Hoy and C. Luap},
+ author = {M. Kr\\\"oger and J. D. Dietz and R. S. Hoy and C. Luap},
  title = {The Z1+package: Shortest multiple disconnected path for the analysis of entanglements in macromolecular systems},
  journal = {Comput. Phys. Commun.},
  volume = {283},
@@ -117,7 +117,7 @@ foreach $m (1 .. $mols) {
     }; 
     $members=$#member+1;
     if ($members>0) { 
-        print "mol $m has $members members\n";
+        print "mol $m has $members members .. ";
 
         # find one end of the molecule
         foreach $k (@member) { $chemdist[$k]=-1; }; 
@@ -215,27 +215,52 @@ print "created config.Z1\n";
 open(D,">backbone-info.txt"); print D @TRANS; close(D);
 print "created backbone-info.txt\n";
 
+# now treat the dump file using the above rules
+$frame=0;
 if (-s "$dumpfile") {
+    print "now scanning through $dumpfile ..\n";
     open(D,"<$dumpfile"); 
     open(Z1,">config.Z1"); 
     while (!eof(D)) {
         $line=<D>; $line=strip($line); 
         if      ($line =~ /NUMBER OF ATOMS/) { $line=<D>; $line=strip($line);
+            $frame+=1; if (($frame % 50) eq 0) { print "processing frame $frame ..\n"; };
             $dumpatoms=$line+0; 
             if ($dumpatoms eq $atoms) { } else { print "conflicting data and dump files [$atoms versus $dumpatoms atoms]\n"; exit; }; 
-        } elsif ($line =~ /ITEM: ATOMS id/) {
-            @XYZ=();
-            @tmp=split(/ /,$line);   
-            $col=-1;
-            foreach $k (0 .. $#tmp) { 
-                if (($tmp[$k] eq "x")||($tmp[$k] eq "xu")) { $col=$k-2; };
+
+        } elsif ($line =~ /ITEM: BOX BOUNDS/) {
+            if ($line eq "ITEM: BOX BOUNDS pp pp pp") {
+                $line=<D>; $line=strip($line); ($xlo,$xhi)=split(/ /,$line);
+                $line=<D>; $line=strip($line); ($ylo,$yhi)=split(/ /,$line);
+                $line=<D>; $line=strip($line); ($zlo,$zhi)=split(/ /,$line);
+            } else { 
+                print "contact the author, or modify the $0 script to treat your dump format\n"; exit; 
             };
-            if ($col eq -1) { print "format error in dumpfile $dumpfile (must contain x or xu)\n"; };
+            $boxx = $xhi-$xlo;
+            $boxy = $yhi-$ylo;
+            $boxz = $zhi-$zlo;
+        } elsif ($line =~ /ITEM: ATOMS/) {
+            @fields=split(/ /,$line); 
+            foreach $i (2 .. $#fields) { 
+                if      ($fields[$i] eq "id")    { $no_id=$i-2; 
+                } elsif ($fields[$i] eq "type")  { $no_type=$i-2;  
+                } elsif ($fields[$i] eq "x")     { $no_x=$i-2; 
+                } elsif ($fields[$i] eq "y")     { $no_y=$i-2;
+                } elsif ($fields[$i] eq "z")     { $no_z=$i-2;
+                } elsif ($fields[$i] eq "xu")    { $no_x=$i-2;
+                } elsif ($fields[$i] eq "yu")    { $no_y=$i-2;
+                } elsif ($fields[$i] eq "zu")    { $no_z=$i-2;
+                }; 
+            };
+            if (!$no_x) { print "dump file has no positions x, or xu, this cannot work\n"; exit; }; 
+            if (!$no_y) { print "dump file has no positions y, or yu, this cannot work\n"; exit; };
+            if (!$no_z) { print "dump file has no positions z, or zu, this cannot work\n"; exit; };
+            @XYZ=();
             foreach $j (1 .. $atoms) {
                 $line=<D>; $line=strip($line);
                 @tmp   = split(/ /,$line);
-                $id    = $row[$tmp[0]]; 
-                $xyz   = "$tmp[$col] $tmp[$col+1] $tmp[$col+2]";
+                $id    = $row[$tmp[$no_id]]; 
+                $xyz   = "$tmp[$no_x] $tmp[$no_y] $tmp[$no_z]";
                 if ($LINEAR_mol[$id]) { $XYZ[$LINEAR_id[$id]] = "$xyz\n"; }; 
             };
             print Z1 "$molecules\n$boxx $boxy $boxz\n";
@@ -247,4 +272,5 @@ if (-s "$dumpfile") {
     close(D);
     close(Z1);
     print "created config.Z1 (trajectory file)\n";
+    print "calculate entanglement properties via: perl ./Z1+ config.Z1\n";
 };
