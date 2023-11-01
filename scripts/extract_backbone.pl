@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 sub USAGE { print<<EOF;
-use as:\n 
+use as:\n
 perl $0 <lammps-data-file> [<lammps-dump-trajectory>]
 
 (c) mk@mat.ethz.ch 1 nov 2023
