@@ -83,7 +83,7 @@ while (!eof(A)) {
         $xf=$x-$boxx*round($x/$boxx);
         $yf=$y-$boxy*round($y/$boxy);
         $zf=$z-$boxz*round($z/$boxz);
-        print "$id $mol $xf $yf $zf\n";
+        print "$id $mol 2 $xf $yf $zf\n";
   };
  };
 }; 
