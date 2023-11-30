@@ -1,0 +1,55 @@
+                       PPA+ atoms (init)      104400
+                             PPA+ chains        1044
+                                PPA+ box    49.70820     49.70820     49.70820
+                     PPA+ number density     0.85000
+                            PPA+ min box    49.70820
+                                PPA+ epc     0.00000
+                    PPA+ init mean bondl     0.97310
+               PPA+ init max bondl (all)     1.24116
+                               PPA+ rcut     1.12246
+                                 PPA+ M           27           27           27
+                                 PPA+ Mi          -1           -1           -1
+                                 PPA+ Mf           1            1            1
+                            PPA+ binsize     1.84104      1.84104      1.84104
+                           PPA+ max_list     4436974
+            PPA+ FENE spring coefficient   105.60498
+                          PPA+ FENE Rmax     1.50000
+                          PPA+ time step     0.00800      0.00800      0.01000      0.01000      0.01000
+                       PPA+ temperature      0.10000      0.05000      0.00500      0.00100      0.00010
+                             PPA+ steps         1249         1249         1000         1000         1000
+________________________________________________________________________________PPA+ on the fly
+                                                                                
+PPA+     step     time phase      T skin      Lpp       secs   listsize  refresh timestep  steps/se   LJu/sec
+PPA+        1      0.0     1 0.1000 0.70   96.272        0.3     922957        1  0.00800       4.0      3327
+PPA+      126      1.0     1 0.1000 0.70   92.830        2.4     942683       11  0.00800      51.6     43058
+PPA+      251      2.0     1 0.1000 0.70   92.638        5.9     949865        1  0.00800      42.6     35612
+PPA+      376      3.0     1 0.1000 0.70   92.606        9.4     951013       22  0.00800      39.9     33359
+PPA+      501      4.0     2 0.0500 0.70   92.566       11.8     952595       11  0.00800      42.3     35364
+PPA+      601      5.0     3 0.0050 0.60   92.542       13.1     773881        4  0.01000      46.0     40039
+PPA+      701      6.0     3 0.0050 0.60   92.535       14.5     774015       10  0.01000      48.4     43279
+PPA+      801      7.0     4 0.0010 0.30   92.531       15.5     402545        6  0.01000      51.5     47054
+PPA+      901      8.0     5 0.0001 0.20   92.530       16.3     330014        3  0.01000      55.2     51221
+                      saving unfolded PP
+________________________________________________________________________________PPA+ results for true chains
+                                  chains        1044
+                                 < Lpp >    92.52998
+                                   < Z >    -1.00000
+                                     Ree    91.95024
+                                     app    91.37413
+                                     bpp     0.93465
+                                   < N >   100.00000
+                   Ne_CC: classical coil    97.76333 (defined in DOI 10.1103/PhysRevE.80.031803)
+                   Ne_MC:  modified coil  7769.76838 (defined in DOI 10.1103/PhysRevE.80.031803)
+________________________________________________________________________________ postprocessing PPA+ results
+                          creating _line
+                creating PPA+summary.dat
+               creating PPA+summary.html
+________________________________________________________________________________ generated files
+                                                                                
+ 1) N_values.dat
+ 2) Ree_values.dat
+ 3) Lpp_values.dat
+ 4) PPA+.dat
+ 5) PPA+summary.dat
+ 6) PPA+summary.html
+ 7) Z1+initconfig.dat
