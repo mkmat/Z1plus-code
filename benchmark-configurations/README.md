@@ -2,12 +2,12 @@ Here we provide benchmark configuration that enable you to reproduce results obt
 
 Reproduce results available in the Z1+reference-results direcory via
 
-    perl ./Z1+ -l benchmark-07.Z1
+    perl ./Z1+ benchmark-07.Z1
     or 
-    perl ./Z1+ -l benchmark-07.dump
+    perl ./Z1+ benchmark-07.dump
 
 Reproduce results available in the PPA+reference-results direcory via
 
-    perl ./Z1+ -l -PPA+ benchmark-07.Z1
+    perl ./Z1+ -PPA+ benchmark-07.Z1
     or 
-    perl ./Z1+ -l -PPA+ benchmark-07.dump
+    perl ./Z1+ -PPA+ benchmark-07.dump
