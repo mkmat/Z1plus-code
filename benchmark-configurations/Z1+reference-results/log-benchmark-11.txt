@@ -1,0 +1,74 @@
+                        Z1+ atoms (init)      104400
+                        Z1+ nodes (init)      104400
+                              Z1+ chains        1044
+                         Z1+ true chains        1044
+                                 Z1+ box    49.70820     49.70820     49.70820
+                      Z1+ number density     0.85000
+                             Z1+ min box    49.70820
+                                 Z1+ epc     0.00000
+       Z1+ init mean bondl (true chains)     0.97310
+      Z1+ init mean bondl (+extra nodes)     0.97310
+                Z1+ init max bondl (all)     1.24116
+                                Z1+ lmax     1.24116
+                           Z1+ thickness     0.00200
+                                Z1+ rcut     1.07487
+                                  Z1+ M           47           47           47
+                                  Z1+ Mi          -1           -1           -1
+                                  Z1+ Mf           1            1            1
+                             Z1+ binsize     1.05762      1.05762      1.05762
+________________________________________________________________________________ legend
+                                                                                
+Z1+ (legend)    pro: progress
+Z1+ (legend)   rcut: cutoff radius
+Z1+ (legend)    vis: visits
+Z1+ (legend)    o  : crossings
+Z1+ (legend)    new: new nodes
+Z1+ (legend)    ---: too long
+Z1+ (legend)    ?  : ghost nodes
+Z1+ (legend)    x  : erased
+Z1+ (legend)  bondl: mean edge length
+Z1+ (legend)  nodes: number of nodes
+Z1+ (legend)  maxID: largest node ID
+Z1+ (legend) handle: # crosspoints handled
+Z1+ (legend)   mem%: percentage of allocated memory used
+________________________________________________________________________________ Z1+ on the fly
+                                                                                
+Z1+  scan  < Lpp >    pro    rcut    vis      o    new    ---      ?      x bondl    nodes    maxID    handled mem%    secs
+Z1+     0   96.337      0   1.075      0      0      0      0      0      0  0.97   104400        0          0  0.0     0.5
+Z1+     1   94.300      0   1.075 102312      0      0      0 102312      0  0.95   104400        0     102312  0.0     1.2
+Z1+     2   93.675      1   1.075 102312      0      0      0 102311      1  0.95   104399        0     204624  0.0     2.0
+Z1+     3   93.388      2   1.075 102311      0      0      0 102309      2  0.94   104397        0     306935  0.0     2.7
+Z1+     4   93.216      1   1.075 102309      0      0      0 102308      1  0.94   104396        0     409244  0.0     3.4
+Z1+     5   93.097      4   1.075 102309      1      1      0 102305      3  0.94   104394    53806     511553 42.9     4.2
+Z1+     6   93.006      4   1.075 102307      3      1      1 102302      2  0.94   104393    53806     613860 42.9     4.9
+Z1+     7   92.935      7   1.075 102308      5      3      1 102300      3  0.94   104393    53810     716168 42.9     5.6
+Z1+     8   92.877     20   1.075 102314     13      9      3 102293      8  0.94   104394    53810     818482 42.9     6.4
+                       identifying kinks
+Z1+     8   91.935      0   1.862      0      0      0      0      0      0  2.07     2138    53810     818482 42.9    12.6
+________________________________________________________________________________ Z1+ results for true chains
+                                  chains        1044
+                                 < Lpp >    91.93543
+                                   < Z >     0.04789
+                                     Ree    91.95024
+                                     app    91.96505
+                                     bpp     0.92864
+                                   < N >   100.00000
+                   Ne_CK: classical kink    94.51852 (defined in DOI 10.1103/PhysRevE.80.031803)
+                   Ne_MK:  modified kink  2088.00000 (defined in DOI 10.1103/PhysRevE.80.031803)
+                   Ne_CC: classical coil    99.03189 (defined in DOI 10.1103/PhysRevE.80.031803)
+                   Ne_MC:  modified coil706953.05586 (defined in DOI 10.1103/PhysRevE.80.031803)
+________________________________________________________________________________ postprocessing Z1+ results
+                          creating _line
+                 creating Z1+summary.dat
+                creating Z1+summary.html
+            analyzing+saving unfolded SP
+________________________________________________________________________________ generated files
+                                                                                
+ 1) N_values.dat
+ 2) Ree_values.dat
+ 3) Lpp_values.dat
+ 4) Z_values.dat
+ 5) Z1+SP.dat
+ 6) Z1+summary.dat
+ 7) Z1+summary.html
+ 8) Z1+initconfig.dat
