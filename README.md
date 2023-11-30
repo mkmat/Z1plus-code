@@ -33,6 +33,14 @@ creates a LAMMPS-dump file or LAMMPS-dump trajectory file. If the option -unfold
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
 
+## The -PPA (and -PPA+) option produce huge Lpp values.
+
+This happens if the system is not of standard Kremer-Grest type, with a maximum bond length of 1.5. The PPA option has been added using classical PPA parameters, and can therefore only be applied if the system respects the constraint. We did not invent new PPA parameters to allow for a comparison with classical PPA results, and because results depend on the choice of parameters. If your system has a bond length that exceeds the maximum allowed value 1.5 is reported by Z1+ in this line:
+
+        PPA+ init max bondl (all)     1.54848
+
+If you still want to use the PPA or PPA+ options, you have to scale your box sizes and particle coordinates in your configuration file.  
+
 ## How to cite the Z1+ code?
 
     M. Kröger, J. D. Dietz, R. S. Hoy and C. Luap,
