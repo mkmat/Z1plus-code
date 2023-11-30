@@ -23,6 +23,16 @@ or
 
     perl ./extract-backbone.pl <lammps-data-file> <lammps-dump-trajectory>
 
+## How to convert a Z1-formatted configuration or trajectory file to LAMMPS-dump-formatted file? 
+
+    perl ./Z1+dump [-unfolded] <Z1-formatted-file>  
+
+creates a LAMMPS-dump file or LAMMPS-dump trajectory file. If the option -unfolded is given, the dump-file contains unfolded coordinates (xu yu zu), otherwise it contains folded (wrapped) coordinates (x,y,z). The dump-file contains two bead types: type 1 (interior beads), type 2 (terminal beads). The script is available for download in the scripts folder. 
+
+## Are there benchmark configurations to test my own implementation of Z1+?
+
+Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
+
 ## How to cite the Z1+ code?
 
     M. Kröger, J. D. Dietz, R. S. Hoy and C. Luap,
