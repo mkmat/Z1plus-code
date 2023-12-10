@@ -29,6 +29,14 @@ or
 
 creates a LAMMPS-dump file or LAMMPS-dump trajectory file. If the option -unfolded is given, the dump-file contains unfolded coordinates (xu yu zu), otherwise it contains folded (wrapped) coordinates (x,y,z). The dump-file contains two bead types: type 1 (interior beads), type 2 (terminal beads). The script is available for download in the scripts folder. 
 
+## How to merge shortest path and original configuration file into a single data or dump trajectory?
+
+Call
+
+    perl ./Z1+export.pl
+
+to see the options. It creates data or dump files or trajectories for selected (or all) snapshots and assigns bead types 1,2,3 for the original chains, and bead types 4,5,6 for the shortest path. 
+
 ## Are there benchmark configurations to test my own implementation of Z1+?
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
