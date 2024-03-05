@@ -1,7 +1,7 @@
 #! /usr/bin/perl
 
 # (c) mk@mat.ethz.ch  19 oct 2023
-# added -ignore-types 29 feb 2024 
+# added -ignore-types 29 feb 2024  
 
 sub USAGE { print<<EOF;
 use as:\n 
