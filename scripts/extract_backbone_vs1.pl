@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# (c) mk@mat.ethz.ch 19 oct 2023
+# (c) mk@mat.ethz.ch 19 oct 2023 
 
 sub USAGE { print<<EOF;
 use as:\n 
