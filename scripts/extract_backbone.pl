@@ -26,6 +26,10 @@ Optionally, the script takes the argument -ignore-types=<type,type,..>
 such as -ignore-types=4 or -ignore-types=2,4. In that case the bead type is 
 completely ignored and won't appear in the resulting files. Any corresponding 
 bonds to other bead types are ignored as well.
+
+This script, without the -ignore-types option can also be used to
+create a Z1-formatted trajectory file from a lammps data and unsorted
+lammps dump file.
 EOF
 exit;
 }; 
