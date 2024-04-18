@@ -64,7 +64,17 @@ This happens if the system is not of standard Kremer-Grest type, with a maximum 
 
         PPA+ init max bondl (all)     1.54848
 
-If you still want to use the PPA or PPA+ options, you have to scale your box sizes and particle coordinates in your configuration file.  
+If you still want to use the PPA or PPA+ options, you have to scale your box sizes and particle coordinates in your configuration file.
+
+## Z1+ crashes because the the lammps data and/or dump files created by vmd or other software seem to be corrupt.
+
+Z1+ crashes, because the data and/or dump files may not contain the molecule IDs. To heal this problem we offer a script that corrects data and dump files using just one command, and saves the new files with "-corrected" appended to their original names. Call
+
+        perl convert_vmd_data_to_proper_data.pl
+
+to see the description. A typical call is 
+
+        perl convert_vmd_data_to_proper_data.pl -data=MyLammps.data -dump=MyLammps.dump 
 
 ## How to cite the Z1+ code?
 
