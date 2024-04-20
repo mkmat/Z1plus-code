@@ -54,6 +54,10 @@ Call
 
 to see the options. It creates data or dump files or trajectories for selected (or all) snapshots and assigns bead types 1,2,3 for the original chains, and bead types 4,5,6 for the shortest path. 
 
+There is another script, that can be called after Z1+ finished. The following script creates lammps data files for the initial and/or shortest path configuration, to see the documentation, just type 
+
+    perl ./Z1+SP-to-data.pl
+
 ## Are there benchmark configurations to test my own implementation of Z1+?
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
