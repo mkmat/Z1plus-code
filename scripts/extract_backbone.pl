@@ -130,7 +130,7 @@ foreach $j (1 .. $atoms) {
     if ($#tmp+1<$minfunc) { $minfunc=$#tmp+1; }; 
 };
 print "functionalities range between $minfunc and $maxfunc\n"; 
-if (($minfunc eq 1)&&($maxfunc eq 2)) { print "use Z1+ with the -h option (strip H-bonds)\n"; exit; }; 
+if (($minfunc eq 1)&&($maxfunc eq 2)) { print "You may try using Z1+ with the -h option (strip H-bonds), but I continue creating a config.Z1 file.\n"; }; 
 if (($minfunc eq 2)&&($maxfunc eq 2)) { print "all molecules are linear molecules, there is nothing to do.\n"; exit; };
 
 # loop over molecules, find longest path
