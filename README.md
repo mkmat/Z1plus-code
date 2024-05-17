@@ -23,6 +23,8 @@ or
 
     perl ./extract-backbone.pl <lammps-data-file> <lammps-dump-trajectory>
 
+Note. From 17 may 2024 onwards, the extract-backbone.pl script treats dump-trajectories with variable (cubic) box sizes. If you need a version that operates on triclinic boxes, let me know. 
+
 ## How to extract linear backbones from fully atomistic LAMMPS models, if the atomistic model contains non-polymers in addition?
 
 Question posed by Jingqi Zhang in Feb 2024. I have LAMMPS data and dump-trajectories (id mol type xu yu zu) for a system that contains branched polymers as well as individual C60 beads (bead type 4). How to convert the dump-trajectory file to a Z1-trajectory file that contains only the linear backbones of the polymers? Such Z1-trajectory file can be analyzed directly using the Z1+ code, while the LAMMPS dump-trajectory file produces errors. 
