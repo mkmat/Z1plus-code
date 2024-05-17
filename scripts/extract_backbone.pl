@@ -1,7 +1,8 @@
 #! /usr/bin/perl
 
-# (c) mk@mat.ethz.ch  19 oct 2023 Martin Kroger (ETH Zurich)
-# added -ignore-types 29 feb 2024 
+# (c) mk@mat.ethz.ch  19 oct 2023
+# added -ignore-types 29 feb 2024
+# treats dump-trajectory with variable box size 17 may 2024
 
 sub USAGE { print<<EOF;
 use as:\n 
@@ -27,14 +28,15 @@ such as -ignore-types=4 or -ignore-types=2,4. In that case the bead type is
 completely ignored and won't appear in the resulting files. Any corresponding 
 bonds to other bead types are ignored as well.
 
-This script, without the -ignore-types option can also be used to
+This script, without the -ignore-types option can also be used to 
 create a Z1-formatted trajectory file from a lammps data and unsorted
-lammps dump file.
+lammps dump file. 
 EOF
 exit;
 }; 
 
 sub strip { chomp $_[0]; $_[0]=~s/^\s+//g; $_[0]=~s/\s+$//; $_[0]=~s/\s+/ /g; $_[0]; };
+sub round { $_[0]+=0; if ($_[0] eq 0) { } else { $_[0]=($_[0]/abs($_[0]))*int(abs($_[0])+0.5); }; $_[0]; };
 
 if ($#ARGV eq -1) { USAGE; }; 
 $datafile=$ARGV[0]; 
@@ -130,7 +132,7 @@ foreach $j (1 .. $atoms) {
     if ($#tmp+1<$minfunc) { $minfunc=$#tmp+1; }; 
 };
 print "functionalities range between $minfunc and $maxfunc\n"; 
-if (($minfunc eq 1)&&($maxfunc eq 2)) { print "You may try using Z1+ with the -h option (strip H-bonds), but I continue creating a config.Z1 file.\n"; }; 
+if (($minfunc eq 1)&&($maxfunc eq 2)) { print "you may use Z1+ with the -h option (strip H-bonds)\n"; }; 
 if (($minfunc eq 2)&&($maxfunc eq 2)) { print "all molecules are linear molecules, there is nothing to do.\n"; exit; };
 
 # loop over molecules, find longest path
@@ -248,6 +250,14 @@ if (-s "$dumpfile") {
         if      ($line =~ /NUMBER OF ATOMS/) { $line=<D>; $line=strip($line);
             $dumpatoms=$line+0; 
             if ($dumpatoms eq $original_atoms) { } else { print "conflicting data and dump files [$original_atoms versus $dumpatoms atoms]\n"; exit; }; 
+        } elsif ($line =~ /ITEM: BOX BOUNDS/) { 
+            $line=<D>; $line=strip($line); ($xlo,$xhi,$xloadd)=split(/ /,$line);    # added 17 may 2024
+            $line=<D>; $line=strip($line); ($ylo,$yhi,$yloadd)=split(/ /,$line);
+            $line=<D>; $line=strip($line); ($zlo,$zhi,$zloadd)=split(/ /,$line);
+            $boxx = $xhi-$xlo;
+            $boxy = $yhi-$ylo;
+            $boxz = $zhi-$zlo;
+            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a cubic box. contact the author for a modified version.\n"; exit; }; 
         } elsif ($line =~ /ITEM: ATOMS id/) {
             @XYZ=();
             @tmp=split(/ /,$line);   
