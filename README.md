@@ -5,6 +5,8 @@ The related publication describing all features is available for free [here at C
 
 Here we collect questions, answers, and additional scripts that may be useful for Z1+ users. 
 
+If you come across any problem during installing or testing Z1+, please be so kind to let me know, so that I can add the information to this site.  
+
 ## How to extract linear backbones from fully atomistic LAMMPS models 
 
 Question: I am simulating atomistically detailed PMMA via LAMMPS, and have saved both a LAMMPS data file and a LAMMPS dump trajectory. Z1+ crashes as the LAMMPS files carry branched structures (chemical formula below). How to make it work? 
