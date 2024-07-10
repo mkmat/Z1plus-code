@@ -5,7 +5,7 @@ The related publication describing all features is available for free [here at C
 
 Here we collect questions, answers, and additional scripts that may be useful for Z1+ users. 
 
-If you come across any problem during installing or testing Z1+, please be so kind to let me know, so that I can add the information to this site.  
+If you come across any problem during installing or testing Z1+, please be so kind to let me know, so that I can add the information for others to this site.  
 
 ## How to extract linear backbones from fully atomistic LAMMPS models 
 
