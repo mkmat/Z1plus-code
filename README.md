@@ -86,7 +86,7 @@ to see the description. A typical call is
 
 ## Error message: cp: target 'config.Z1' is not a directory
 
-The original CPC version of Z1+ was developed on a platform where blanks in directory and file names are prohibited. Therefore please install Z1+ in a directory whose parents have no blanks in directory names, or alternatively, replace the file Z1+template.pl residing in your installation directory by Z1+template.pl offered in the replacements folder. 
+The original CPC version of Z1+ was developed on a platform where blanks in directory and file names are prohibited. Therefore please install Z1+ in a directory whose parents have no blanks in directory names, or alternatively, replace the file Z1+template.pl residing in your installation directory by Z1+template.pl offered in the replacements folder (and let me know if this solved your problem). 
 
 ## Error message: severe (64): input conversion error
 
