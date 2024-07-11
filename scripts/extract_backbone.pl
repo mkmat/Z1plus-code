@@ -41,7 +41,7 @@ sub round { $_[0]+=0; if ($_[0] eq 0) { } else { $_[0]=($_[0]/abs($_[0]))*int(ab
 if ($#ARGV eq -1) { USAGE; }; 
 $datafile=$ARGV[0]; 
 if (-s "$datafile") { } else { print "missing file $datafile\n"; exit; }; 
-if ($#ARGV > 0) { 
+if ($#ARGV > 0 && $ARGV[1] !~ qr/-ignore-types/) {
     $dumpfile=$ARGV[1]; 
     if (-s "$dumpfile") { } else { print "missing file $dumpfile\n"; exit; };
 }; 
