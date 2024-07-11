@@ -120,7 +120,7 @@ print "box $xlo $xhi $ylo $yhi $zlo $zhi\n";
 # create connectivity information
 foreach $j (1 .. $bonds) { 
     $conn[$b1[$j]].="$b2[$j] ";
-    $conn[$b2[$j]].="$b1[$j] "
+    $conn[$b2[$j]].="$b1[$j] ";
 };
 foreach $j (1 .. $atoms) { $conn[$j]=~s/ $//; }; 
 
