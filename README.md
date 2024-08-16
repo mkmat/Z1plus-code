@@ -81,6 +81,10 @@ If the script is called without arguments, it returns the following description.
         If you prefer to create a data file with folded coordinates, add the -folded option.
     -txt
         If you prefer to have the coordinates saved in txt-format, add the -txt option.
+    -dat
+        In addition to creating a lammps data file, create two files using the .dat-format.
+        Z1+initconfig-chain=ChainID.dat contains the coordinates of the original chains,
+        Z1+SP-chain=ChainID.dat contains the coordinates of the corresponding shortest paths.
     -SP
         Add the shortest paths of all chains (atom and bond type 2) to the created data file.
     -ee
