@@ -11,7 +11,7 @@ ________________________________________________________________________________
 
 Command syntax: 
 
-perl $0 <ChainId> [-folded] [-txt] [-SP] [-ee] [-o=..]
+perl $0 <ChainId> [-folded] [-txt] [-dat] [-SP] [-ee] [-o=..]
 
 Upon entering a chain ID, the script generates a lammps-formatted data file 
 (format: id mol type x y z, no charges) that contains the selected chain along with all 
@@ -25,6 +25,10 @@ ChainID
     If you prefer to create a data file with folded coordinates, add the -folded option. 
 -txt
     If you prefer to have the coordinates saved in txt-format, add the -txt option.
+-dat
+    Instead of creating a lammps data file, create two files using the .dat-format.
+    Z1+initconfig-chain=ChainID.dat contains the coordinates of the original chains, 
+    Z1+SP-chain=ChainID.dat contains the coordinates of the corresponding shortest paths. 
 -SP
     Add the shortest paths of all chains (atom and bond type 2) to the created data file.
 -ee
@@ -43,6 +47,7 @@ $in = "Z1+initconfig.dat";
 $SP = "Z1+SP.dat";
 $savetxt = 0; 
 $savedata = 1; 
+$savedat = 0; 
 
 sub green { "\033[1;32;40m$_[0]\033[1;37;40m"; };
 sub red   { "\033[1;31;40m$_[0]\033[1;37;40m"; };
@@ -79,6 +84,7 @@ if ($bad eq 1) { USAGE; };
 foreach $arg (@ARGV) { ($field,$value)=split(/=/,$arg);
     if ($arg eq "-folded") { $folded=1; };
     if ($arg eq "-txt")    { $savetxt=1; $savedata=0; }; 
+    if ($arg eq "-dat")    { $savedat=1; $savedata=0; $addSP=1; }; 
     if ($arg eq "-SP")     { $addSP=1; };
     if ($arg eq "-ee")     { $addEE=1; };
     if ($field eq "-o")    { $data="$value"; };
@@ -93,8 +99,8 @@ foreach $c (1 .. $chains) {
     $Z[$c] = 0;
     foreach $b (1 .. $NSP[$c]) {
         $line=<SP>; $line=strip($line);
-        ($xSP[$c][$b],$ySP[$c][$b],$zSP[$c][$b],$pos[$c][$b],$ent,$entc[$c][$b],$entb[$c][$b])=split(/ /,$line);
-        $Z[$c] += $ent;
+        ($xSP[$c][$b],$ySP[$c][$b],$zSP[$c][$b],$pos[$c][$b],$ent[$c][$b],$entc[$c][$b],$entb[$c][$b])=split(/ /,$line);
+        $Z[$c] += $ent[$c][$b];
         if (($b eq 2)&(!$entc[$c][$b])) { $message = red("You do not have the proper Z1+SP.dat file. Call Z1+ with the -SP+ option to create it!"); USAGE; }; 
     };
     if ($c < 10) { print "chain id $c has $Z[$c] entanglements\n"; }; 
@@ -110,6 +116,7 @@ $id=1; $bid=0;
 $atomtypes = 1; 
 $bondtypes = 1; 
 $OUT="$id $selected 1 $x[$selected][1] $y[$selected][1] $z[$selected][1]\n";
+$OUTDAT="$N[$selected]\n$x[$selected][1] $y[$selected][1] $z[$selected][1]\n"; 
 $xhi = $x[$selected][1]; $xlo = $xhi;
 $yhi = $y[$selected][1]; $ylo = $yhi;
 $zhi = $z[$selected][1]; $zlo = $zhi;
@@ -130,8 +137,10 @@ foreach $b (2 .. $N[$selected]) {
         $yy = $yu - $boxy*$iy;
         $zz = $zu - $boxz*$iz;
         $OUT.="$id $selected 1 $xx $yy $zz $ix $iy $iz\n";
+        $OUTDAT.="$xx $yy $zz\n";
     } else { 
         $OUT.="$id $selected 1 $xu $yu $zu 0 0 0\n";
+        $OUTDAT.="$xu $yu $zu\n"; 
         if ($xu > $xhi) { $xhi = $xu; }; 
         if ($yu > $yhi) { $yhi = $yu; };
         if ($zu > $zhi) { $zhi = $zu; };
@@ -149,10 +158,11 @@ if (!$folded) { print "revised xlo xhi .. zlo: $xlo $xhi $ylo $yhi $zlo $zhi so 
 # create folded/unfolded original coordinates of entanged chains
 if (!$data) { $data = "entangled-with-chain-$selected.data"; };
 print green("now creating lammps data file for selected chain id $selected ..\n");
-@ENTANGLED=(); @SHIFTX=(); @SHIFTY=(); @SHIFTZ=(); 
+@ENTANGLED=(); @SHIFTX=(); @SHIFTY=(); @SHIFTZ=(); @REVERSE=(); $REVERSE[$selected]=1; 
 foreach $b (2 .. $NSP[$selected]-1) { 
     $entangled = $entc[$selected][$b];
     $ENTANGLED[$#ENTANGLED+1] = $entangled; 
+    $REVERSE[$entangled] = $#ENTANGLED+2; 
     print "adding entangled chain pair ($selected <-> $entangled)\n"; 
     $ux = $xSP[$entangled][$entb[$selected][$b]]-$xSP[$selected][$b];
     $uy = $ySP[$entangled][$entb[$selected][$b]]-$ySP[$selected][$b];
@@ -173,8 +183,10 @@ foreach $b (2 .. $NSP[$selected]-1) {
         $yy = $ys - $boxy*$iy;
         $zz = $zs - $boxz*$iz;
         $OUT.="$id $entangled 1 $xx $yy $zz $ix $iy $iz\n";
+        $OUTDAT.="$N[$entangled]\n$xx $yy $zz\n";
     } else { 
         $OUT.="$id $entangled 1 $xs $ys $zs 0 0 0\n";
+        $OUTDAT.="$N[$entangled]\n$xs $ys $zs\n";
     }; 
     foreach $be (2 .. $N[$entangled]) {
         $id+=1;
@@ -189,8 +201,10 @@ foreach $b (2 .. $NSP[$selected]-1) {
             $yy = $ys - $boxy*$iy;
             $zz = $zs - $boxz*$iz;
             $OUT.="$id $entangled 1 $xx $yy $zz $ix $iy $iz\n";
+            $OUTDAT.="$xx $yy $zz\n";
         } else { 
             $OUT.="$id $entangled 1 $xs $ys $zs 0 0 0\n";
+            $OUTDAT.="$xs $ys $zs\n";
         }; 
         $bid+=1; 
         $id0=$id-1; 
@@ -205,6 +219,8 @@ $id+=1; $selected_SP = $selected+$chains;
 $atomtypes = 2; 
 $bondtypes = 2; 
 $OUT.="$id $selected_SP 2 $xSP[$selected][1] $ySP[$selected][1] $zSP[$selected][1]\n";
+$ENTC = $REVERSE[$entc[$selected][1]]; 
+$OUTDATSP.="$NSP[$selected]\n$xSP[$selected][1] $ySP[$selected][1] $zSP[$selected][1] $pos[$selected][1] $ent[$selected][1] $ENTC $entb[$selected][1]\n";
 foreach $b (2 .. $NSP[$selected]) {
     $id+=1;
     $ux = $xSP[$selected][$b]-$xSP[$selected][$b-1]; $ux -= $boxx*round($ux/$boxx);
@@ -221,8 +237,12 @@ foreach $b (2 .. $NSP[$selected]) {
         $yy = $yu - $boxy*$iy;
         $zz = $zu - $boxz*$iz;
         $OUT.="$id $selected_SP 2 $xx $yy $zz $ix $iy $iz\n";
+        $ENTC = $REVERSE[$entc[$selected][$b]]; if ((!$ENTC)&&($b<$NSP[$selected])) { $ENTC="-1"; };
+        $OUTDATSP.="$xx $yy $zz $pos[$selected][$b] $ent[$selected][$b] $ENTC $entb[$selected][$b]\n";
     } else {
         $OUT.="$id $selected_SP 2 $xu $yu $zu 0 0 0\n";
+        $ENTC = $REVERSE[$entc[$selected][$b]]; if ((!$ENTC)&&($b<$NSP[$selected])) { $ENTC="-1"; };
+        $OUTDATSP.="$xu $yu $zu $pos[$selected][$b] $ent[$selected][$b] $ENTC $entb[$selected][$b]\n";
     };
     $bid+=1;
     $id0=$id-1;
@@ -247,8 +267,12 @@ foreach $no (0 .. $#ENTANGLED) {
         $yy = $ys - $boxy*$iy;
         $zz = $zs - $boxz*$iz;
         $OUT.="$id $entangled_SP 2 $xx $yy $zz $ix $iy $iz\n";
+        $ENTC = $REVERSE[$entc[$entangled][1]]; 
+        $OUTDATSP.="$NSP[$entangled]\n$xx $yy $zz $pos[$entangled][1] $ent[$entangled][1] $ENTC $entb[$entangled][1]\n";
     } else {
         $OUT.="$id $entangled_SP 2 $xs $ys $zs 0 0 0\n";
+        $ENTC = $REVERSE[$entc[$entangled][1]]; 
+        $OUTDATSP.="$NSP[$entangled]\n$xs $ys $zs $pos[$entangled][1] $ent[$entangled][1] $ENTC $entb[$entangled][1]\n";
     };
     foreach $be (2 .. $NSP[$entangled]) {
         $id+=1;
@@ -263,8 +287,12 @@ foreach $no (0 .. $#ENTANGLED) {
             $yy = $ys - $boxy*$iy;
             $zz = $zs - $boxz*$iz;
             $OUT.="$id $entangled_SP 2 $xx $yy $zz $ix $iy $iz\n";
+            $ENTC = $REVERSE[$entc[$entangled][$be]]; if ((!$ENTC)&($be<$NSP[$entangled])) { $ENTC="-1"; };
+            $OUTDATSP.="$xx $yy $zz $pos[$entangled][$be] $ent[$entangled][$be] $ENTC $entb[$entangled][$be]\n";
         } else {
             $OUT.="$id $entangled_SP 2 $xs $ys $zs 0 0 0\n";
+            $ENTC = $REVERSE[$entc[$entangled][$be]]; if ((!$ENTC)&($be<$NSP[$entangled])) { $ENTC="-1"; };
+            $OUTDATSP.="$xs $ys $zs $pos[$entangled][$be] $ent[$entangled][$be] $ENTC $entb[$entangled][$be]\n";
         };
         $bid+=1;
         $id0=$id-1;
@@ -304,8 +332,27 @@ close(OUT);
 print green("created $data ($id atoms, $chains chains, $bid bonds, $atomtypes atom types, $bondtypes bond types)\n");
 }; 
 
+# save dat-files
+if ($savedat) {
+$entangled_chains = $#ENTANGLED+1; 
+open(OUT,">Z1+initconfig-chain=$selected.dat"); print OUT<<EOF;
+$entangled_chains
+$boxx $boxy $boxz
+$OUTDAT
+EOF
+close(OUT);
+open(OUT,">Z1+SP-chain=$selected.dat"); print OUT<<EOF;
+$entangled_chains
+$boxx $boxy $boxz
+$OUTDATSP
+EOF
+close(OUT);
+print green("created Z1+initconfig-chain=$selected.dat and Z1+SP-chain=$selected.dat.\n($id atoms, $chains chains, $bid bonds, $atomtypes atom types, $bondtypes bond types)\n");
+};
+
 # for non-ovito users: 
 if ($savetxt) { 
     $txt = "entangled-with-chain-$selected.txt"; open(OUT,">$txt"); print OUT $OUT; close(OUT); 
     print green("created $txt\n"); 
 }; 
+
