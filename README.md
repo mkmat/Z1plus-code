@@ -72,7 +72,7 @@ Upon entering a chain ID, the script generates a lammps-formatted data file
 (format: id mol type x y z, no charges) that contains the selected chain along with all
 chains entangled with it. Note that the generated data file contains unfolded coordinates
 by default. In this new data file, all atoms and bonds of the original chains have type 1.
-By default, the name of the created data file is entangled-with-chain-<ChainId>.data
+By default, the name of the created data file is entangled-with-chain-ChainId.data
 If the script is called without arguments, it returns the following description.
 
     ChainID
