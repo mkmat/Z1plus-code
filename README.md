@@ -62,6 +62,32 @@ There is another script, that can be called after Z1+ finished. The following sc
 
     perl ./Z1+SP-to-data.pl
 
+## How to visualize or inspect a single chain with all chains entangled with it? 
+
+This may done most conveniently using our script 
+
+    perl ./extract-single-chain-entanglements.pl <ChainId> [-folded] [-txt] [-SP] [-ee] [-o=..]
+
+Upon entering a chain ID, the script generates a lammps-formatted data file
+(format: id mol type x y z, no charges) that contains the selected chain along with all
+chains entangled with it. Note that the generated data file contains unfolded coordinates
+by default. In this new data file, all atoms and bonds of the original chains have type 1.
+By default, the name of the created data file is entangled-with-chain-<ChainId>.data
+If the script is called without arguments, it returns the following description.
+
+    ChainID
+        A number between 1 and number of chains present in your system.
+    -folded
+        If you prefer to create a data file with folded coordinates, add the -folded option.
+    -txt
+        If you prefer to have the coordinates saved in txt-format, add the -txt option.
+    -SP
+        Add the shortest paths of all chains (atom and bond type 2) to the created data file.
+    -ee
+        Add the end-to-end bonds (bond type 3) to the created data file.
+    -o=<filename>
+        Write the data file to <filename> instead of using the default.
+
 ## Are there benchmark configurations to test my own implementation of Z1+?
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
