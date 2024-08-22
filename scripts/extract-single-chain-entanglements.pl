@@ -18,6 +18,7 @@ Upon entering a chain ID, the script generates a lammps-formatted data file
 chains entangled with it. Note that the generated data file contains unfolded coordinates
 by default. In this new data file, all atoms and bonds of the original chains have type 1.
 By default, the name of the created data file is entangled-with-chain-<ChainId>.data
+If the script is called without arguments, it returns the following description.
 
 ChainID
     A number between 1 and number of chains present in your system.
@@ -81,13 +82,14 @@ close(IN);
 
 if ($bad eq 1) { USAGE; };
 
-foreach $arg (@ARGV) { ($field,$value)=split(/=/,$arg);
-    if ($arg eq "-folded") { $folded=1; };
-    if ($arg eq "-txt")    { $savetxt=1; $savedata=0; }; 
-    if ($arg eq "-dat")    { $savedat=1; $savedata=0; $addSP=1; }; 
-    if ($arg eq "-SP")     { $addSP=1; };
-    if ($arg eq "-ee")     { $addEE=1; };
-    if ($field eq "-o")    { $data="$value"; };
+foreach $iarg (0 .. $#ARGV)     { $arg=$ARGV[$iarg]; ($field,$value)=split(/=/,$arg);
+    if ($arg eq "-folded")      { $folded=1; 
+    } elsif ($arg eq "-txt")    { $savetxt=1; $savedata=0; 
+    } elsif ($arg eq "-dat")    { $savedat=1; $savedata=0; $addSP=1; 
+    } elsif ($arg eq "-SP")     { $addSP=1; 
+    } elsif ($arg eq "-ee")     { $addEE=1; 
+    } elsif ($field eq "-o")    { $data="$value"; 
+    } elsif ($iarg>0)           { $message = red("Unknown argument $arg\n"); USAGE; };  
 };
 
 # read shortest paths
@@ -101,7 +103,9 @@ foreach $c (1 .. $chains) {
         $line=<SP>; $line=strip($line);
         ($xSP[$c][$b],$ySP[$c][$b],$zSP[$c][$b],$pos[$c][$b],$ent[$c][$b],$entc[$c][$b],$entb[$c][$b])=split(/ /,$line);
         $Z[$c] += $ent[$c][$b];
-        if (($b eq 2)&(!$entc[$c][$b])) { $message = red("You do not have the proper Z1+SP.dat file. Call Z1+ with the -SP+ option to create it!"); USAGE; }; 
+        if (($b eq 2)&(!$entc[$c][$b])&($Z[$c]>0)) { 
+            $message = red("You do not have the proper Z1+SP.dat file. Call Z1+ with the -SP+ option to create it!"); USAGE; 
+        }; 
     };
     if ($c < 10) { print "chain id $c has $Z[$c] entanglements\n"; }; 
     if ($c eq $chains) { print "...\nchain $c has $Z[$c] entanglements\n"; };
@@ -110,6 +114,7 @@ close(SP);
 
 $selected = int($ARGV[0]); 
 if (($selected < 0)|($selected > $chains)) { $message=red("Chain id $selected does not exist in your files"); USAGE; }; 
+if ($Z[$selected] eq 0) { $message=red("Chain id $selected does not have any entanglements"); USAGE; }; 
 
 # create folded/unfolded original coordinates of selected chain
 $id=1; $bid=0; 
@@ -164,16 +169,40 @@ foreach $b (2 .. $NSP[$selected]-1) {
     $ENTANGLED[$#ENTANGLED+1] = $entangled; 
     $REVERSE[$entangled] = $#ENTANGLED+2; 
     print "adding entangled chain pair ($selected <-> $entangled)\n"; 
-    $ux = $xSP[$entangled][$entb[$selected][$b]]-$xSP[$selected][$b];
-    $uy = $ySP[$entangled][$entb[$selected][$b]]-$ySP[$selected][$b];
-    $uz = $zSP[$entangled][$entb[$selected][$b]]-$zSP[$selected][$b];
-    $shiftx = $boxx*round($ux/$boxx); $SHIFTX[$#SHIFTX+1] = $shiftx; 
-    $shifty = $boxy*round($uy/$boxy); $SHIFTY[$#SHIFTY+1] = $shifty; 
-    $shiftz = $boxz*round($uz/$boxz); $SHIFTZ[$#SHIFTZ+1] = $shiftz; 
+
+    foreach $beadshift (0 .. 1) { 
+        $ux = $xSP[$entangled][$beadshift+$entb[$selected][$b]]-$xSP[$selected][$b];
+        $uy = $ySP[$entangled][$beadshift+$entb[$selected][$b]]-$ySP[$selected][$b];
+        $uz = $zSP[$entangled][$beadshift+$entb[$selected][$b]]-$zSP[$selected][$b];
+        $shiftx = $boxx*round($ux/$boxx); 
+        $shifty = $boxy*round($uy/$boxy); 
+        $shiftz = $boxz*round($uz/$boxz); 
+        $ux -= $shiftx;
+        $uy -= $shifty;
+        $uz -= $shiftz;
+        $distance[$beadshift] = sqrt($ux*$ux+$uy*$uy+$uz*$uz); 
+    }; 
+    if ($distance[0]<$distance[1]) {
+        $beadshift = 0;
+    } else {
+        $beadshift = 1; 
+    }; 
+    $ux = $xSP[$entangled][$beadshift+$entb[$selected][$b]]-$xSP[$selected][$b];
+    $uy = $ySP[$entangled][$beadshift+$entb[$selected][$b]]-$ySP[$selected][$b];
+    $uz = $zSP[$entangled][$beadshift+$entb[$selected][$b]]-$zSP[$selected][$b];
+    $shiftx = $boxx*round($ux/$boxx); $SHIFTX[$#SHIFTX+1] = -$shiftx;
+    $shifty = $boxy*round($uy/$boxy); $SHIFTY[$#SHIFTY+1] = -$shifty;
+    $shiftz = $boxz*round($uz/$boxz); $SHIFTZ[$#SHIFTZ+1] = -$shiftz;
+    $ux -= $shiftx;
+    $uy -= $shifty;
+    $uz -= $shiftz;
+    $distance = sqrt($ux*$ux+$uy*$uy+$uz*$uz);
+
+    # print "SHIFT [entangled no $#ENTANGLED - original $entangled] $SHIFTX[$#SHIFTX] $SHIFTY[$#SHIFTY] $SHIFTZ[$#SHIFTZ]\n";
     $id+=1;
-    $xs = $x[$entangled][1] - $shiftx; 
-    $ys = $y[$entangled][1] - $shifty;
-    $zs = $z[$entangled][1] - $shiftz;
+    $xs = $x[$entangled][1] + $shiftx; 
+    $ys = $y[$entangled][1] + $shifty;
+    $zs = $z[$entangled][1] + $shiftz;
     $EE1[$#EE1+1] = $id;
     if ($folded) { 
         $ix = round($xs/$boxx);
@@ -190,9 +219,9 @@ foreach $b (2 .. $NSP[$selected]-1) {
     }; 
     foreach $be (2 .. $N[$entangled]) {
         $id+=1;
-        $xs = $x[$entangled][$be] - $shiftx;
-        $ys = $y[$entangled][$be] - $shifty;
-        $zs = $z[$entangled][$be] - $shiftz; 
+        $xs = $x[$entangled][$be] + $shiftx;
+        $ys = $y[$entangled][$be] + $shifty;
+        $zs = $z[$entangled][$be] + $shiftz; 
         if ($folded) {
             $ix = round($xs/$boxx);
             $iy = round($ys/$boxy);
@@ -256,9 +285,9 @@ foreach $no (0 .. $#ENTANGLED) {
     $entangled = $ENTANGLED[$no]; 
     $entangled_SP = $entangled + $chains;
     $id+=1;
-    $xs = $xSP[$entangled][1] - $SHIFTX[$no];
-    $ys = $ySP[$entangled][1] - $SHIFTY[$no];
-    $zs = $zSP[$entangled][1] - $SHIFTZ[$no];
+    $xs = $xSP[$entangled][1] + $SHIFTX[$no];
+    $ys = $ySP[$entangled][1] + $SHIFTY[$no];  # 21 aug 2024
+    $zs = $zSP[$entangled][1] + $SHIFTZ[$no];
     if ($folded) {
         $ix = round($xs/$boxx);
         $iy = round($ys/$boxy);
@@ -276,9 +305,9 @@ foreach $no (0 .. $#ENTANGLED) {
     };
     foreach $be (2 .. $NSP[$entangled]) {
         $id+=1;
-        $xs = $xSP[$entangled][$be] - $SHIFTX[$no];
-        $ys = $ySP[$entangled][$be] - $SHIFTY[$no];
-        $zs = $zSP[$entangled][$be] - $SHIFTZ[$no];
+        $xs = $xSP[$entangled][$be] + $SHIFTX[$no];
+        $ys = $ySP[$entangled][$be] + $SHIFTY[$no];
+        $zs = $zSP[$entangled][$be] + $SHIFTZ[$no];
         if ($folded) {
             $ix = round($xs/$boxx);
             $iy = round($ys/$boxy);
@@ -335,14 +364,15 @@ print green("created $data ($id atoms, $chains chains, $bid bonds, $atomtypes at
 # save dat-files
 if ($savedat) {
 $entangled_chains = $#ENTANGLED+1; 
+$chains_in_dat_file = $entangled_chains+1; 
 open(OUT,">Z1+initconfig-chain=$selected.dat"); print OUT<<EOF;
-$entangled_chains
+$chains_in_dat_file
 $boxx $boxy $boxz
 $OUTDAT
 EOF
 close(OUT);
 open(OUT,">Z1+SP-chain=$selected.dat"); print OUT<<EOF;
-$entangled_chains
+$chains_in_dat_file
 $boxx $boxy $boxz
 $OUTDATSP
 EOF
