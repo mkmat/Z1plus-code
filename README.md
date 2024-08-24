@@ -84,7 +84,16 @@ If the script is called without arguments, it returns the following description.
     -dat
         In addition to creating a lammps data file, create two files using the .dat-format.
         Z1+initconfig-chain=ChainID.dat contains the coordinates of the original chains,
-        Z1+SP-chain=ChainID.dat contains the coordinates of the corresponding shortest paths.
+        Z1+SP-chain=ChainID.dat contains the coordinates of the corresponding shortest paths. The dat format is: 
+            Number of chains
+            boxx boxx boxy
+            number of nodes of chain #1
+            x y z
+            ...
+            number of nodes of chain #2
+            x y z
+            ...
+            etc
     -SP
         Add the shortest paths of all chains (atom and bond type 2) to the created data file.
     -ee
