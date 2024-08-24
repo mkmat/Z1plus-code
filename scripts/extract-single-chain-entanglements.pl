@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 
-# (c) 14 aug 2024 mk@mat.ethz.ch 
+# (c) 24 aug 2024 mk@mat.ethz.ch 
 
 sub USAGE { print<<EOF;
 ________________________________________________________________________________
@@ -120,11 +120,19 @@ if ($Z[$selected] eq 0) { $message=red("Chain id $selected does not have any ent
 $id=1; $bid=0; 
 $atomtypes = 1; 
 $bondtypes = 1; 
-$OUT="$id $selected 1 $x[$selected][1] $y[$selected][1] $z[$selected][1]\n";
-$OUTDAT="$N[$selected]\n$x[$selected][1] $y[$selected][1] $z[$selected][1]\n"; 
-$xhi = $x[$selected][1]; $xlo = $xhi;
-$yhi = $y[$selected][1]; $ylo = $yhi;
-$zhi = $z[$selected][1]; $zlo = $zhi;
+$xu = $x[$selected][1];
+$yu = $y[$selected][1];
+$zu = $z[$selected][1]; 
+if ($folded) {
+    $xu -= $boxx*round($xu/$boxx);
+    $yu -= $boxy*round($yu/$boxy);
+    $zu -= $boxz*round($zu/$boxz);
+};
+$OUT="$id $selected 1 $xu $yu $zu\n";
+$OUTDAT="$N[$selected]\n$xu $yu $zu\n"; 
+$xhi = $xu; $xlo = $xhi;
+$yhi = $yu; $ylo = $yhi;
+$zhi = $zu; $zlo = $zhi;
 $EE1[$#EE1+1] = $id; 
 foreach $b (2 .. $N[$selected]) {
     $id+=1; 
@@ -160,7 +168,7 @@ foreach $b (2 .. $N[$selected]) {
 $EE2[$#EE2+1] = $id;
 if (!$folded) { print "revised xlo xhi .. zlo: $xlo $xhi $ylo $yhi $zlo $zhi so that the box contains the unfolded chains.\n"; }; 
 
-# create folded/unfolded original coordinates of entanged chains
+# create folded/unfolded original coordinates of entangled chains
 if (!$data) { $data = "entangled-with-chain-$selected.data"; };
 print green("now creating lammps data file for selected chain id $selected ..\n");
 @ENTANGLED=(); @SHIFTX=(); @SHIFTY=(); @SHIFTZ=(); @REVERSE=(); $REVERSE[$selected]=1; 
@@ -197,12 +205,13 @@ foreach $b (2 .. $NSP[$selected]-1) {
     $uy -= $shifty;
     $uz -= $shiftz;
     $distance = sqrt($ux*$ux+$uy*$uy+$uz*$uz);
+    # print "distance $distance\n";
 
     # print "SHIFT [entangled no $#ENTANGLED - original $entangled] $SHIFTX[$#SHIFTX] $SHIFTY[$#SHIFTY] $SHIFTZ[$#SHIFTZ]\n";
     $id+=1;
-    $xs = $x[$entangled][1] + $shiftx; 
-    $ys = $y[$entangled][1] + $shifty;
-    $zs = $z[$entangled][1] + $shiftz;
+    $xs = $x[$entangled][1] + $SHIFTX[$#ENTANGLED];
+    $ys = $y[$entangled][1] + $SHIFTY[$#ENTANGLED];
+    $zs = $z[$entangled][1] + $SHIFTZ[$#ENTANGLED];
     $EE1[$#EE1+1] = $id;
     if ($folded) { 
         $ix = round($xs/$boxx);
@@ -219,9 +228,9 @@ foreach $b (2 .. $NSP[$selected]-1) {
     }; 
     foreach $be (2 .. $N[$entangled]) {
         $id+=1;
-        $xs = $x[$entangled][$be] + $shiftx;
-        $ys = $y[$entangled][$be] + $shifty;
-        $zs = $z[$entangled][$be] + $shiftz; 
+        $xs = $x[$entangled][$be] + $SHIFTX[$#ENTANGLED];
+        $ys = $y[$entangled][$be] + $SHIFTY[$#ENTANGLED];
+        $zs = $z[$entangled][$be] + $SHIFTZ[$#ENTANGLED];
         if ($folded) {
             $ix = round($xs/$boxx);
             $iy = round($ys/$boxy);
@@ -247,17 +256,22 @@ if ($addSP) {
 $id+=1; $selected_SP = $selected+$chains; 
 $atomtypes = 2; 
 $bondtypes = 2; 
-$OUT.="$id $selected_SP 2 $xSP[$selected][1] $ySP[$selected][1] $zSP[$selected][1]\n";
+$xu = $xSP[$selected][1];
+$yu = $ySP[$selected][1];
+$zu = $zSP[$selected][1];
+if ($folded) {
+    $xu -= $boxx*round($xu/$boxx);
+    $yu -= $boxy*round($yu/$boxy);
+    $zu -= $boxz*round($zu/$boxz);
+};
+$OUT.="$id $selected_SP 2 $xu $yu $zu\n";
 $ENTC = $REVERSE[$entc[$selected][1]]; 
-$OUTDATSP.="$NSP[$selected]\n$xSP[$selected][1] $ySP[$selected][1] $zSP[$selected][1] $pos[$selected][1] $ent[$selected][1] $ENTC $entb[$selected][1]\n";
+$OUTDATSP.="$NSP[$selected]\n$xu $yu $zu $pos[$selected][1] $ent[$selected][1] $ENTC $entb[$selected][1]\n";
 foreach $b (2 .. $NSP[$selected]) {
     $id+=1;
-    $ux = $xSP[$selected][$b]-$xSP[$selected][$b-1]; $ux -= $boxx*round($ux/$boxx);
-    $uy = $ySP[$selected][$b]-$ySP[$selected][$b-1]; $uy -= $boxy*round($uy/$boxy);
-    $uz = $zSP[$selected][$b]-$zSP[$selected][$b-1]; $uz -= $boxz*round($uz/$boxz);
-    $xu = $xSP[$selected][$b-1]+$ux;
-    $yu = $ySP[$selected][$b-1]+$uy;
-    $zu = $zSP[$selected][$b-1]+$uz;
+    $xu = $xSP[$selected][$b];
+    $yu = $ySP[$selected][$b];
+    $zu = $zSP[$selected][$b]; 
     if ($folded) {
         $ix = round($xu/$boxx);
         $iy = round($yu/$boxy);
