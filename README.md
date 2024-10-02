@@ -101,6 +101,12 @@ If the script is called without arguments, it returns the following description.
     -o=<filename>
         Write the data file to <filename> instead of using the default.
 
+## How to add nanoparticles and rigid bodies to my configuration prior applying Z1+?
+
+There is repository [Zmesh](https://github.com/popolin522/Zmesh) available that provides reasons on why and how rigid bodies can be meshed and used directly with 
+a polymer configuration in Z1+. In short, you can add any kind of surface mesh made of dumbbells (polymers with 2 beads only) to your configuration file (lammps data
+file, in particular). Since Z1+ does not move the terminal atoms of chains, the surface(s) will serve as obstacles.
+
 ## Are there benchmark configurations to test my own implementation of Z1+?
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
