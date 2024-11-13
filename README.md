@@ -137,6 +137,10 @@ The original CPC version of Z1+ was developed on a platform where blanks in dire
 
 This error appears if the time step in your lammps dump file exceeds 2147483647, the largest default-sized integer. 
 
+## Error message: Z1+ crashed if Z1+ is applied to a sheared lammps data file 
+
+Please download the updated Z1+import-lammps.pl file from the scripts directory and replace your existing file by the new one. There is no need to reinstall Z1+. The error was due to a missing line (marked by 13 nov 2024). 
+
 ## How to cite the Z1+ code?
 
     M. Kröger, J. D. Dietz, R. S. Hoy and C. Luap,
