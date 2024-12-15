@@ -95,6 +95,7 @@ while (!eof(D)) {
         $j = 0; 
         foreach $jj (1 .. $original_bonds) { $line=<D>; $line=strip($line);
             $j += 1; 
+            $line =~ s/\#.*//;
             ($bid,$btype,$b1[$j],$b2[$j])=split(/ /,$line);
             $ignore = 0;
             foreach $k (0 .. $#ignoretype) { 
