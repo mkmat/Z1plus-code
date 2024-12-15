@@ -2,6 +2,7 @@
 
 # (c) mk@mat.ethz.ch  19 oct 2023
 # added -ignore-types 29 feb 2024
+# added $line =~ s/\#.*//; 15 dec 2024
 # treats dump-trajectory with variable box size 17 may 2024
 
 sub USAGE { print<<EOF;
@@ -64,6 +65,7 @@ while (!eof(D)) {
         $j = 0; 
         foreach $jj (1 .. $original_atoms) { $line=<D>; $line=strip($line);
             $j += 1; 
+            $line =~ s/\#.*//;
             @tmp=split(/ /,$line); 
             if ($#tmp eq 8) {
                 ($id,$mol[$j],$type[$j],$x[$j],$y[$j],$z[$j],$rest)=split(/ /,$line); 
