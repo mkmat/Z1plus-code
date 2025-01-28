@@ -49,6 +49,10 @@ A LAMMPS dump-file does not contain information about bonds. Only if the dump-fi
     perl ./Z1+dump [-unfolded] <Z1-formatted-file>  
 
 creates a LAMMPS-dump file or LAMMPS-dump trajectory file. If the option -unfolded is given, the dump-file contains unfolded coordinates (xu yu zu), otherwise it contains folded (wrapped) coordinates (x,y,z). The dump-file contains two bead types: type 1 (interior beads), type 2 (terminal beads). The script is available for download in the scripts folder. 
+Note that a Z1-formatted file has all chain lengths in its third line. Z1+ also creates dat files (Z1+SP.dat, Z1+PPA.dat, Z1+initconfiguration.dat). Such .dat-files can be converted to a LAMMPS-dump trajectory myfile.dump using
+
+    perl ./Z1+dat2dump [-unfolded] Z1+SP.dat > myfile.dump 
+
 
 ## How to merge shortest path and original configuration file into a single data or dump trajectory?
 
