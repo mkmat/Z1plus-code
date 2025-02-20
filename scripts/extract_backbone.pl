@@ -261,7 +261,7 @@ if (-s "$dumpfile") {
             $boxx = $xhi-$xlo;
             $boxy = $yhi-$ylo;
             $boxz = $zhi-$zlo;
-            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a orthorhombic box. contact the author for a modified version.\n"; exit; }; 
+            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a orthorhombic, untilted box. contact the author for a modified version.\n"; exit; }; 
         } elsif ($line =~ /ITEM: ATOMS id/) {
             @XYZ=();
             @tmp=split(/ /,$line);   
