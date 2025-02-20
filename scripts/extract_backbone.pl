@@ -4,6 +4,7 @@
 # added -ignore-types 29 feb 2024
 # added $line =~ s/\#.*//; 15 dec 2024
 # treats dump-trajectory with variable box size 17 may 2024
+# replaced just the word "cubic" by "orthorhombic" 20 feb 2024
 
 sub USAGE { print<<EOF;
 use as:\n 
@@ -260,7 +261,7 @@ if (-s "$dumpfile") {
             $boxx = $xhi-$xlo;
             $boxy = $yhi-$ylo;
             $boxz = $zhi-$zlo;
-            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a cubic box. contact the author for a modified version.\n"; exit; }; 
+            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a orthorhombic box. contact the author for a modified version.\n"; exit; }; 
         } elsif ($line =~ /ITEM: ATOMS id/) {
             @XYZ=();
             @tmp=split(/ /,$line);   
