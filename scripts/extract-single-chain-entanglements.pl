@@ -57,7 +57,7 @@ if (-s "$in") { $exin=green("exists"); } else { $exin=red("missing"); $bad=1; };
 if (-s "$SP") { $exSP=green("exists"); } else { $exSP=red("missing"); $bad=1; }; 
 
 sub strip { chomp $_[0]; $_[0]=~s/^\s+//g; $_[0]=~s/\s+$//; $_[0]=~s/\s+/ /g; $_[0]; };
-sub round { $_[0]+=0; if ($_[0] eq 0) { } else { $_[0]=($_[0]/abs($_[0]))*int(abs($_[0])+0.5); }; $_[0]; };
+sub round { my $TMP="@_"; $TMP+=0; if ($TMP eq 0) { } else { $TMP=($TMP/abs($TMP))*int(abs($TMP)+0.5); }; $TMP; };
 
 # read initial configuration
 if (-s "$in") { 
