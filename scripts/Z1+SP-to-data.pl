@@ -67,7 +67,7 @@ foreach $arg (@ARGV) {
 };
 
 sub strip { chomp $_[0]; $_[0]=~s/^\s+//g; $_[0]=~s/\s+$//; $_[0]=~s/\s+/ /g; $_[0]; }; 
-sub round { if ($_[0] eq 0) { } else { $_[0]/=abs($_[0]); $_[0]*=int(abs($_[0])+0.5); }; $_[0]; };
+sub round { my $TMP="@_"; $TMP+=0; if ($TMP eq 0) { } else { $TMP=($TMP/abs($TMP))*int(abs($TMP)+0.5); }; $TMP; };
 
 # ------------------------
 if ($option_i) { 
