@@ -114,9 +114,9 @@ close(IN);
 $atoms = $id; 
 print "$atoms atoms .. ";
 print "$bonds bonds\n";
-$xlo=$boxx/2; $xhi=-$xlo; 
-$ylo=$boxy/2; $yhi=-$ylo;
-$zlo=$boxz/2; $zhi=-$zlo;
+$xlo=-$boxx/2; $xhi=-$xlo; 
+$ylo=-$boxy/2; $yhi=-$ylo;
+$zlo=-$boxz/2; $zhi=-$zlo;
 foreach $id (1 .. $atoms) {
     $ix[$id] = round($xu[$id]/$boxx); 
     $x[$id]  = $xu[$id] - $boxx*$ix[$id];
@@ -208,9 +208,9 @@ close(IN);
 $SPatoms = $id;
 print "$SPatoms SP atoms .. ";
 print "$SPbonds SP bonds\n";
-$xlo=$boxx/2; $xhi=-$xlo;
-$ylo=$boxy/2; $yhi=-$ylo;
-$zlo=$boxz/2; $zhi=-$zlo;
+$xlo=-$boxx/2; $xhi=-$xlo;
+$ylo=-$boxy/2; $yhi=-$ylo;
+$zlo=-$boxz/2; $zhi=-$zlo;
 foreach $id (1 .. $SPatoms) {
     $SPix[$id] = round($SPxu[$id]/$boxx);
     $SPx[$id]  = $SPxu[$id] - $boxx*$SPix[$id];
