@@ -1,10 +1,12 @@
 #! /usr/bin/perl
 
 # (c) mk@mat.ethz.ch  19 oct 2023
+
+# added orthorhombic  20 feb 2024
 # added -ignore-types 29 feb 2024
-# added $line =~ s/\#.*//; 15 dec 2024
-# treats dump-trajectory with variable box size 17 may 2024
-# replaced just the word "cubic" by "orthorhombic" 20 feb 2024
+# variable box size   17 may 2024
+# added $line         15 dec 2024
+# added $epc           2 sep 2025
 
 sub USAGE { print<<EOF;
 use as:\n 
@@ -38,12 +40,12 @@ exit;
 }; 
 
 sub strip { chomp $_[0]; $_[0]=~s/^\s+//g; $_[0]=~s/\s+$//; $_[0]=~s/\s+/ /g; $_[0]; };
-sub round { my $TMP="@_"; $TMP+=0; if ($TMP eq 0) { } else { $TMP=($TMP/abs($TMP))*int(abs($TMP)+0.5); }; $TMP; };
+sub round { $_[0]+=0; if ($_[0] eq 0) { } else { $_[0]=($_[0]/abs($_[0]))*int(abs($_[0])+0.5); }; $_[0]; };
 
 if ($#ARGV eq -1) { USAGE; }; 
 $datafile=$ARGV[0]; 
 if (-s "$datafile") { } else { print "missing file $datafile\n"; exit; }; 
-if ($#ARGV > 0 && $ARGV[1] !~ qr/-ignore-types/) {
+if ($#ARGV > 0 && $ARGV[1] !~ qr/-ignore-types/) { 
     $dumpfile=$ARGV[1]; 
     if (-s "$dumpfile") { } else { print "missing file $dumpfile\n"; exit; };
 }; 
@@ -255,13 +257,21 @@ if (-s "$dumpfile") {
             $dumpatoms=$line+0; 
             if ($dumpatoms eq $original_atoms) { } else { print "conflicting data and dump files [$original_atoms versus $dumpatoms atoms]\n"; exit; }; 
         } elsif ($line =~ /ITEM: BOX BOUNDS/) { 
-            $line=<D>; $line=strip($line); ($xlo,$xhi,$xloadd)=split(/ /,$line);    # added 17 may 2024
-            $line=<D>; $line=strip($line); ($ylo,$yhi,$yloadd)=split(/ /,$line);
-            $line=<D>; $line=strip($line); ($zlo,$zhi,$zloadd)=split(/ /,$line);
+            $line=<D>; $line=strip($line); ($xlobound,$xhibound,$xy)=split(/ /,$line);    # added 17 may 2024
+            $line=<D>; $line=strip($line); ($ylobound,$yhibound,$xz)=split(/ /,$line);
+            $line=<D>; $line=strip($line); ($zlobound,$zhibound,$yz)=split(/ /,$line);
+            $xy+=0; $xz+=0; $yz+=0;
+            if ($xy) {                                                                        # added 2 sep 2025
+                $epc  = $xy;                                                                  # added 2 sep 2025
+                if ($xy<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xy; };                # added 2 sep 2025
+                if ($xy>0.0) { $xhi=$xhibound-$xy; } else { $xhi=$xhibound; };                # added 2 sep 2025
+            } else {                                                                          # added 2 sep 2025
+                $xhi = $xhibound; $xlo = $xlobound; $epc = 0;                                 # added 2 sep 2025
+            };                                                                                # added 2 sep 2025
             $boxx = $xhi-$xlo;
             $boxy = $yhi-$ylo;
             $boxz = $zhi-$zlo;
-            if (($xloadd)||($yloadd)||($zloadd)) { print "ATTENTION: this script assumes a orthorhombic, untilted box. contact the author for a modified version.\n"; exit; }; 
+            if (($xz)||($yz)) { print "ATTENTION xz=$xz, yz=$yz: this script assumes a cubic or xy-sheared box. contact the author for a modified version.\n"; exit; }; 
         } elsif ($line =~ /ITEM: ATOMS id/) {
             @XYZ=();
             @tmp=split(/ /,$line);   
@@ -283,6 +293,7 @@ if (-s "$dumpfile") {
             foreach $j (0 .. $#N)   { print Z1 "$N[$j] "; }; print Z1 "\n";
             print Z1 @XYZ; 
             # print Z1 "0\n";     # separator
+            if ($epc) { print Z1 "-1\n$epc\n"; };                                       # added 2 sep 2025
         } elsif ($line =~ /TIMESTEP/) {
             $line=<D>+0; print "[$dumpfile] processing time step $line\n"; 
         };
