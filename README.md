@@ -111,6 +111,13 @@ There is repository [Zmesh](https://github.com/popolin522/Zmesh) available that 
 a polymer configuration in Z1+. In short, you can add any kind of surface mesh made of dumbbells (polymers with 2 beads only) to your configuration file (lammps data
 file, in particular). Since Z1+ does not move the terminal atoms of chains, the surface(s) will serve as obstacles.
 
+## How to analyze a sheared, atomistic dump trajectory?
+
+You need a lammps data file of the unsheared system, as well as a dump trajectory file. Z1+ assumes that you shear in x-direction, gradient in y-direction, so that the only nonzero tilt is xy. Extract the backbone and tilt values, pass them over to config.Z1, and start Z1+ via
+
+        perl ./extract_backbone.pl <myfile.data> <myfile.dump>;
+        perl ./Z1+
+
 ## Are there benchmark configurations to test my own implementation of Z1+?
 
 Yes, some of the benchmark configurations treated in the publication are available from the benchmark-configurations directory. 
