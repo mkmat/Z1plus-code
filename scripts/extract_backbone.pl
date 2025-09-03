@@ -268,16 +268,16 @@ if (-s "$dumpfile") {
             $epc = 0;
             if ($xy) {
                 $epc  = $xy;
-                if ($xy<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xy; };
-                if ($xy>0.0) { $xhi=$xhibound-$xy; } else { $xhi=$xhibound; };
+                if ($xy<0.0) { $xlo-=$xy; };    # according to https://docs.lammps.org/Howto_triclinic.html
+                if ($xy>0.0) { $xhi-=$xy; };
             } elsif ($xz) {
                 $epc  = $xz;
-                if ($xz<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xz; };
-                if ($xz>0.0) { $xhi=$xhibound-$xz; } else { $xhi=$xhibound; };
+                if ($xz<0.0) { $xlo-=$xz; };
+                if ($xz>0.0) { $xhi-=$xz; };
             } elsif ($yz) {
                 $epc  = $yz;
-                if ($yz<0.0) { $ylo=$ylobound; } else { $ylo=$ylobound-$yz; };
-                if ($yz>0.0) { $yhi=$yhibound-$yz; } else { $yhi=$yhibound; };
+                if ($yz<0.0) { $ylo-=$yz; };
+                if ($yz>0.0) { $yhi-=$yz; };
             };
             $boxx = $xhi-$xlo;
             $boxy = $yhi-$ylo;
