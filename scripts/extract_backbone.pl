@@ -293,7 +293,7 @@ if (-s "$dumpfile") {
             foreach $j (0 .. $#N)   { print Z1 "$N[$j] "; }; print Z1 "\n";
             print Z1 @XYZ; 
             # print Z1 "0\n";     # separator
-            if ($epc) { print Z1 "-1\n$epc\n"; };                                       # added 2 sep 2025
+            print Z1 "-1\n$epc\n";                                                               # added 2 sep 2025
         } elsif ($line =~ /TIMESTEP/) {
             $line=<D>+0; print "[$dumpfile] processing time step $line\n"; 
         };
