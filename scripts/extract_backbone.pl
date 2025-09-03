@@ -260,18 +260,32 @@ if (-s "$dumpfile") {
             $line=<D>; $line=strip($line); ($xlobound,$xhibound,$xy)=split(/ /,$line);    # added 17 may 2024
             $line=<D>; $line=strip($line); ($ylobound,$yhibound,$xz)=split(/ /,$line);
             $line=<D>; $line=strip($line); ($zlobound,$zhibound,$yz)=split(/ /,$line);
+            # modified + added 2 sep 2025 from here
             $xy+=0; $xz+=0; $yz+=0;
-            if ($xy) {                                                                        # added 2 sep 2025
-                $epc  = $xy;                                                                  # added 2 sep 2025
-                if ($xy<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xy; };                # added 2 sep 2025
-                if ($xy>0.0) { $xhi=$xhibound-$xy; } else { $xhi=$xhibound; };                # added 2 sep 2025
-            } else {                                                                          # added 2 sep 2025
-                $xhi = $xhibound; $xlo = $xlobound; $epc = 0;                                 # added 2 sep 2025
-            };                                                                                # added 2 sep 2025
+            $xhi = $xhibound; $xlo = $xlobound;
+            $yhi = $yhibound; $ylo = $ylobound;
+            $zhi = $zhibound; $zlo = $zlobound;
+            $epc = 0;
+            if ($xy) {
+                $epc  = $xy;
+                if ($xy<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xy; };
+                if ($xy>0.0) { $xhi=$xhibound-$xy; } else { $xhi=$xhibound; };
+            } elsif ($xz) {
+                $epc  = $xz;
+                if ($xz<0.0) { $xlo=$xlobound; } else { $xlo=$xlobound-$xz; };
+                if ($xz>0.0) { $xhi=$xhibound-$xz; } else { $xhi=$xhibound; };
+            } elsif ($yz) {
+                $epc  = $yz;
+                if ($yz<0.0) { $ylo=$ylobound; } else { $ylo=$ylobound-$yz; };
+                if ($yz>0.0) { $yhi=$yhibound-$yz; } else { $yhi=$yhibound; };
+            };
             $boxx = $xhi-$xlo;
             $boxy = $yhi-$ylo;
             $boxz = $zhi-$zlo;
-            if (($xz)||($yz)) { print "ATTENTION xz=$xz, yz=$yz: this script assumes a cubic or xy-sheared box. contact the author for a modified version.\n"; exit; }; 
+            if (($xy)&&($xz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
+            if (($xy)&&($yz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
+            if (($xz)&&($yz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
+            # to here
         } elsif ($line =~ /ITEM: ATOMS id/) {
             @XYZ=();
             @tmp=split(/ /,$line);   
