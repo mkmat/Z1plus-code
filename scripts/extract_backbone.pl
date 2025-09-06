@@ -265,23 +265,33 @@ if (-s "$dumpfile") {
             $xhi = $xhibound; $xlo = $xlobound;
             $yhi = $yhibound; $ylo = $ylobound;
             $zhi = $zhibound; $zlo = $zlobound;
+            $boxx = $xhi-$xlo;
+            $boxy = $yhi-$ylo;
+            $boxz = $zhi-$zlo;
             $epc = 0;
+            $dcolx = 0; $dcoly = 0; $dcolz = 0;   # added 6 sep 2025
             if ($xy) {
                 $epc  = $xy;
                 if ($xy<0.0) { $xlo-=$xy; };    # according to https://docs.lammps.org/Howto_triclinic.html
                 if ($xy>0.0) { $xhi-=$xy; };
+                $boxx = $xhi-$xlo;
+                $boxy = $yhi-$ylo;
+                $boxz = $zhi-$zlo;
             } elsif ($xz) {
                 $epc  = $xz;
                 if ($xz<0.0) { $xlo-=$xz; };
                 if ($xz>0.0) { $xhi-=$xz; };
+                $boxx = $xhi-$xlo;
+                $boxy = $zhi-$zlo; $dcoly = 1; 
+                $boxz = $yhi-$ylo; $dcolz = -1; 
             } elsif ($yz) {
                 $epc  = $yz;
                 if ($yz<0.0) { $ylo-=$yz; };
                 if ($yz>0.0) { $yhi-=$yz; };
+                $boxx = $yhi-$ylo; $dcolx = 1; 
+                $boxy = $zhi-$zlo; $dcoly = 1; 
+                $boxz = $xhi-$xlo; $dcolz = -2;
             };
-            $boxx = $xhi-$xlo;
-            $boxy = $yhi-$ylo;
-            $boxz = $zhi-$zlo;
             if (($xy)&&($xz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
             if (($xy)&&($yz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
             if (($xz)&&($yz)) { print "ATTENTION xy=$xy, xz=$xz, yz=$yz: this script assumes a cubic or xy- or xz- or yz-sheared box. contact the author for a modified version.\n"; exit; };
@@ -299,7 +309,7 @@ if (-s "$dumpfile") {
                 @tmp   = split(/ /,$line);
                 $id    = $row[$tmp[0]]; 
                 if ($id) { 
-                    $xyz   = "$tmp[$col] $tmp[$col+1] $tmp[$col+2]";
+                    $xyz   = "$tmp[$col+$dcolx] $tmp[$col+1+$dcoly] $tmp[$col+2+$dcolz]";
                     if ($LINEAR_mol[$id]) { $XYZ[$LINEAR_id[$id]] = "$xyz\n"; }; 
                 }; 
             };
