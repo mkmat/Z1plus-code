@@ -277,14 +277,14 @@ if (-s "$dumpfile") {
                 $boxx = $xhi-$xlo;
                 $boxy = $yhi-$ylo;
                 $boxz = $zhi-$zlo;
-            } elsif ($xz) {
+            } elsif ($xz) {                      # not recommended, in that case we have to exchange y and z coordinates
                 $epc  = $xz;
                 if ($xz<0.0) { $xlo-=$xz; };
                 if ($xz>0.0) { $xhi-=$xz; };
                 $boxx = $xhi-$xlo;
                 $boxy = $zhi-$zlo; $dcoly = 1; 
                 $boxz = $yhi-$ylo; $dcolz = -1; 
-            } elsif ($yz) {
+            } elsif ($yz) {                      # not recommended
                 $epc  = $yz;
                 if ($yz<0.0) { $ylo-=$yz; };
                 if ($yz>0.0) { $yhi-=$yz; };
