@@ -1,6 +1,7 @@
 # Z1+ code
 
-The Z1+ code creating the shortest multiple disconnected path for the analysis of entanglements in macromolecular systems is available for download [here at mendeley](https://data.mendeley.com/datasets/m425t6xtwr/1)
+The Z1+ code creating the shortest multiple disconnected path for the analysis of entanglements in macromolecular systems is available for download [here at mendeley](https://data.mendeley.com/datasets/m425t6xtwr/1). The file at Mendeley does not contain the latest version of the Z1+import-lammps.pl script. Please download Z1+import-lammps.pl drom the scripts directory and overwrite Z1+import-lammps.pl you obtained from Mendeley with this latest version (before or after installing Z1+).  
+
 The related publication describing all features is available for free [here at Comput. Phys. Commun.](https://www.sciencedirect.com/science/article/pii/S0010465522002867?via%3Dihub)
 
 Here we collect questions, answers, and additional scripts that may be useful for Z1+ users. 
@@ -139,6 +140,10 @@ Z1+ crashes, because the data and/or dump files may not contain the molecule IDs
 to see the description. A typical call is 
 
         perl convert_vmd_data_to_proper_data.pl -data=MyLammps.data -dump=MyLammps.dump 
+
+## Z1+ results exhibit periodic oscillations when analysing a sheared dump trajectory
+
+This problem was caused by a sign problem in the conversion from xlobound to xlo, and had been fixed. Download Z1+import-lammps.pl from the scripts directory and overwrite your existing Z1+import-lammps.pl located within in your Z1+ installation directory. There is no need to re-install Z1+. 
 
 ## Error message: cp: target 'config.Z1' is not a directory
 
