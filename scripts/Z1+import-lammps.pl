@@ -5,6 +5,7 @@
 
 # 22 feb 2023 added CREATE_ID_CONVERSION_TABLE
 # 13 nov 2024 added xy in USE_COORDINATES_FROM_DATA_FILE
+#  5 oct 2025 replaced + by - in xlobound (prevents oscillating results during shear)
 
 sub USAGE { if ($ERROR) { $ADD="**** ERROR ****"; }; print<<EOF;
 
@@ -340,9 +341,11 @@ sub INSPECT_DATA_FILE {
     } else { 
         foreach $i (1 .. $maxid) { if ($conns[$i]>2) { $ERROR =<<EOF;
     ******* Branched structure! 
-	1) If your system carries H atoms, restart with the additional option: -ignore_H
-	2) additional info: conn[$i]=$conn[$i]
-	3) convert your chain into a linear chain, ie erase atoms unnecessary for Z1 analysis
+	1) Try the extract-backbone.pl script available at https://github.com/mkmat/Z1plus-code
+	2) If your system carries H atoms, restart with the additional option: -ignore_H
+	3) additional info: conn[$i]=$conn[$i]
+	4) convert your chain into a linear chain, ie erase atoms unnecessary for Z1 analysis
+	5) Use the -branched option to convert all sidechains to individual chains
 EOF
                 USAGE; 
             }; 
@@ -434,8 +437,8 @@ sub READ_SNAPSHOT_USING_INFO_FROM_DATA {
     $line=<DUMP>; $line=STRIP($line); ($xlobound,$xhibound,$xy)=split(/ /,$line);
     $line=<DUMP>; $line=STRIP($line); ($ylobound,$yhibound,$xz)=split(/ /,$line);
     $line=<DUMP>; $line=STRIP($line); ($zlobound,$zhibound,$yz)=split(/ /,$line);
-    $xlo=$xlobound+min(0.0,$xy);
-    $xhi=$xhibound-max(0,$xy);
+    $xlo=$xlobound-min(0.0,$xy);   # 5 oct 2025 replaced + by -
+    $xhi=$xhibound-max(0.0,$xy);
    } elsif ($line=~/ITEM: BOX BOUNDS/) {
      $line=<DUMP>; $line=STRIP($line); ($xlo,$xhi)=split(/ /,$line); $xy=0; 
      $line=<DUMP>; $line=STRIP($line); ($ylo,$yhi)=split(/ /,$line); $xz=0; 
@@ -508,8 +511,8 @@ sub READ_SNAPSHOT_WITHOUT_INFO_FROM_DATA {
     $line=<DUMP>; $line=STRIP($line); ($xlobound,$xhibound,$xy)=split(/ /,$line);
     $line=<DUMP>; $line=STRIP($line); ($ylobound,$yhibound,$xz)=split(/ /,$line);
     $line=<DUMP>; $line=STRIP($line); ($zlobound,$zhibound,$yz)=split(/ /,$line);
-    $xlo=$xlobound+min(0.0,$xy);
-    $xhi=$xhibound-max(0,$xy);
+    $xlo=$xlobound-min(0.0,$xy);  # 5 oct 2025 replaced + by -
+    $xhi=$xhibound-max(0.0,$xy);
     $ylo=$ylobound;
     $yhi=$yhibound;
     $zlo=$zlobound;
