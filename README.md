@@ -26,7 +26,7 @@ or
 
     perl ./extract-backbone.pl <lammps-data-file> <lammps-dump-trajectory>
 
-Note. From 17 may 2024 onwards, the extract-backbone.pl script treats dump-trajectories with variable (cubic) box sizes. If you need a version that operates on triclinic boxes, let me know. 
+Note. From 17 may 2024 onwards, the extract-backbone.pl script treats dump-trajectories with variable (cubic) box sizes. From 2 sep 2025 onwards, it treates sheared tricilinc boxes. Note that in the case of sheared configuration you should not extract the backbone from a single data file without dump trajectory at hand, as the information about the Lees-Edwards parameters is retrieved by the extract-backbone.pl from the dump trajectory. 
 
 ## How to extract linear backbones from fully atomistic LAMMPS models, if the atomistic model contains non-polymers in addition?
 
