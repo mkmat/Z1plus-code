@@ -6,6 +6,7 @@
 # 22 feb 2023 added CREATE_ID_CONVERSION_TABLE
 # 13 nov 2024 added xy in USE_COORDINATES_FROM_DATA_FILE
 #  5 oct 2025 replaced + by - in xlobound (prevents oscillating results during shear)
+# 27 aug 2026 shift coordinates so that [xlo,xhi] is mapped to [-1,1]*boxx/2. This does not affect results. 
 
 sub USAGE { if ($ERROR) { $ADD="**** ERROR ****"; }; print<<EOF;
 
@@ -173,7 +174,7 @@ sub IGNORE_DUMBBELLS {
     $Ns=""; foreach $i (1 .. $chains) { $Ns.="$N[$i] "; }; $Ns=~s/ $//;
 };
 
-sub OPTIONAL_WRITE_TRUECHAINS_TO_DUMP {		# added 15 oct 2019
+sub OPTIONAL_WRITE_TRUECHAINS_TO_DUMP {     # added 15 oct 2019
     if ($outdumpfile) { } else { return; }; 
     open(OUTDUMP,">$outdumpfile"); 
     print OUTDUMP "ITEM: TIMESTEP\n0\nITEM: ATOMS\n$ATOMS\n";
@@ -228,6 +229,9 @@ sub USE_COORDINATES_FROM_DATA_FILE {
  $boxx=$xhi-$xlo;
  $boxy=$yhi-$ylo;
  $boxz=$zhi-$zlo;
+ $xshift=($xlo+$xhi)/2;     # added 27 aug 2026
+ $yshift=($ylo+$yhi)/2;
+ $zshift=($zlo+$zhi)/2; 
  foreach $c (1 .. $chains) { $N[$c]=0; }; 
  until ($found eq 1) {
   $line=<DATA>; $line=STRIP($line);
@@ -253,9 +257,9 @@ sub USE_COORDINATES_FROM_DATA_FILE {
    $ID=$newid[$id];
    $MOL[$ID]=$newmol[$id];
    $TYPE[$ID]=$mytype;
-   $x[$ID]=$myx;
-   $y[$ID]=$myy; 
-   $z[$ID]=$myz; 
+   $x[$ID]=$myx-$xshift;
+   $y[$ID]=$myy-$yshift; 
+   $z[$ID]=$myz-$zshift; 
    $N[$MOL[$ID]]+=1;
   }; 
  }; 
@@ -341,11 +345,11 @@ sub INSPECT_DATA_FILE {
     } else { 
         foreach $i (1 .. $maxid) { if ($conns[$i]>2) { $ERROR =<<EOF;
     ******* Branched structure! 
-	1) Try the extract-backbone.pl script available at https://github.com/mkmat/Z1plus-code
-	2) If your system carries H atoms, restart with the additional option: -ignore_H
-	3) additional info: conn[$i]=$conn[$i]
-	4) convert your chain into a linear chain, ie erase atoms unnecessary for Z1 analysis
-	5) Use the -branched option to convert all sidechains to individual chains
+    1) Try the extract-backbone.pl script available at https://github.com/mkmat/Z1plus-code
+    2) If your system carries H atoms, restart with the additional option: -ignore_H
+    3) additional info: conn[$i]=$conn[$i]
+    4) convert your chain into a linear chain, ie erase atoms unnecessary for Z1 analysis
+    5) Use the -branched option to convert all sidechains to individual chains
 EOF
                 USAGE; 
             }; 
@@ -357,8 +361,8 @@ EOF
     foreach $i (1 .. $maxid) { $conn[$i]=~s/ $//;
         @tmp=split(/ /,$conn[$i]);
         if ($#tmp eq 0) { 
-            @tmp2=split(/ /,$conn[$tmp[0]]); 		# added 9 oct 2019
-            if ($#tmp2 eq 0) {				# added 9 oct 2019
+            @tmp2=split(/ /,$conn[$tmp[0]]);        # added 9 oct 2019
+            if ($#tmp2 eq 0) {              # added 9 oct 2019
                 if ($verbose) { print "pair $tmp[0] $tmp2[0] is a dimer\n"; }; 
                 if ($ignore_dumbbells) { } else {
                     $chains+=1; $endids[$#endids+1]=$i;
@@ -389,7 +393,7 @@ EOF
                 $newid[$ids[0]]=$novelid;
                 $newmol[$ids[0]]=$chain;
                 @tmp2=split(/ /,$conn[$ids[0]]); 
-                if ($tmp2[0] eq $id) { 		# added 9 oct 2019
+                if ($tmp2[0] eq $id) {      # added 9 oct 2019
                     $conn[$ids[0]]=$tmp2[1]; 
                 } elsif ($tmp2[1] eq $id) {
                     $conn[$ids[0]]=$tmp2[0]; 
@@ -401,7 +405,7 @@ EOF
             };
             # if ($bead eq 1) { print "chain with single bead. BUG\n"; die; };
             if ($deactivated[$id]) { $ERROR="$id was already deactivated! STOP. contact mk.\n"; USAGE; };
-            $deactivated[$endid]=1; 		
+            $deactivated[$endid]=1;         
             $deactivated[$id]=1;
         };
     };
@@ -449,6 +453,9 @@ sub READ_SNAPSHOT_USING_INFO_FROM_DATA {
    $boxx=$xhi-$xlo;
    $boxy=$yhi-$ylo;
    $boxz=$zhi-$zlo;
+   $xshift=($xlo+$xhi)/2;     # added 27 aug 2026
+   $yshift=($ylo+$yhi)/2;
+   $zshift=($zlo+$zhi)/2;
    $line=<DUMP>; $line=STRIP($line);
    if ($line=~/ITEM: ATOMS/) {
     $REQ=0; @tmp=split(/ /,$line); 
@@ -481,9 +488,9 @@ sub READ_SNAPSHOT_USING_INFO_FROM_DATA {
       $ID=$newid[$id];
       $MOL[$ID]=$newmol[$id]; 
       $TYPE[$ID]=$type[$id];
-      $x[$ID]=$tmp[$col_x]*$scalex;
-      $y[$ID]=$tmp[$col_y]*$scaley;
-      $z[$ID]=$tmp[$col_z]*$scalez; 
+      $x[$ID]=($tmp[$col_x]-$xshift)*$scalex;
+      $y[$ID]=($tmp[$col_y]-$yshift)*$scaley;
+      $z[$ID]=($tmp[$col_z]-$zshift)*$scalez; 
       $N[$MOL[$ID]]+=1; 
       if ($ID>$ATOMS) { $ATOMS=$ID; }; 
      }; 
@@ -527,6 +534,9 @@ sub READ_SNAPSHOT_WITHOUT_INFO_FROM_DATA {
    $boxx=$xhi-$xlo;
    $boxy=$yhi-$ylo;
    $boxz=$zhi-$zlo;
+   $xshift=($xlo+$xhi)/2;     # added 27 aug 2026
+   $yshift=($ylo+$yhi)/2;
+   $zshift=($zlo+$zhi)/2;
    $line=<DUMP>; $line=STRIP($line);
    if ($line=~/ITEM: ATOMS/) {
     $REQ=0; @tmp=split(/ /,$line);
@@ -564,9 +574,9 @@ sub READ_SNAPSHOT_WITHOUT_INFO_FROM_DATA {
      $ID=$j; 
      $MOL[$ID]=$mol;
      $TYPE[$ID]=$tmp[$col_type]; 
-     $x[$ID]=$tmp[$col_x]*$scalex;
-     $y[$ID]=$tmp[$col_y]*$scaley;
-     $z[$ID]=$tmp[$col_z]*$scalez;
+     $x[$ID]=($tmp[$col_x]-$xshift)*$scalex;
+     $y[$ID]=($tmp[$col_y]-$yshift)*$scaley;
+     $z[$ID]=($tmp[$col_z]-$zshift)*$scalez;
     };
     if ($verbose) { print "$ATOMS atoms\n"; };
     $Ns=""; foreach $i (1 .. $chains) { $Ns.="$N[$i] "; }; $Ns=~s/ $//;
@@ -677,11 +687,11 @@ if (($REQDATA eq 1)&&($REQDUMP eq 1)) {
  until ((eof(DUMP))||($snapshot>$to)) { READ_SNAPSHOT_WITHOUT_INFO_FROM_DATA; };
  CLOSE_DUMP_FILE;
 } elsif ($REQDATA eq 1) { 
- OPEN_DATA_FILE;		
- INSPECT_DATA_FILE;		
- CLOSE_DATA_FILE;		
+ OPEN_DATA_FILE;        
+ INSPECT_DATA_FILE;     
+ CLOSE_DATA_FILE;       
  OPEN_DATA_FILE;                
- OPEN_Z1_FORMATTED;		
+ OPEN_Z1_FORMATTED;     
  USE_COORDINATES_FROM_DATA_FILE; 
  CLOSE_DATA_FILE; 
  OPTIONAL_WRITE_TRUECHAINS_TO_DUMP;
