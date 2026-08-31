@@ -24,7 +24,7 @@ The 2nd new option allows to study branched polymeric systems. Z1+ identifies li
 
 The 3rd new option is of interest if the original system was sheared in x-direction (gradient in y-direction). In that case -LeesEdwards adds the Lees-Edwards parameter (more information in the Z1+README.txt file) to the end of the Z1+SP.dat and Z1+initconfig.dat files (as well as to the PPA.dat file if the -PPA or -PPA+ options are chosen). The Lees-Edwards parameter is needed to calculate physical distances in the Z1+SP.dat file. 
 
-This version of the Z1+ code is not available from Mendeley, but available for download <a href="https://www.complexfluids.ethz.ch/MK/Z1+/CODE/Z1+2026.tar.gz">from my server</a>. Save Z1+2026.tar.gz in a new directory, uncompress it, check its content, unpack, and install Z1+ via 
+This version of the Z1+ code is not available from Mendeley, but available for download <a href="https://www.complexfluids.ethz.ch/MK/Z1+/CODE/Z1+2026.tar.gz">here from my server</a>. Save Z1+2026.tar.gz in a new directory, uncompress it, check its content, unpack, and install Z1+ via 
 
         gzip -d  Z1+2026.tar.gz;  # uncompress
         tar -t -v -f Z1+2026.tar; # check content; 
