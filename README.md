@@ -1,12 +1,35 @@
 # Z1+ code
 
-The Z1+ code creating the shortest multiple disconnected path for the analysis of entanglements in macromolecular systems is available for download [here at mendeley](https://data.mendeley.com/datasets/m425t6xtwr/1). The file at Mendeley does not contain the latest version of the Z1+import-lammps.pl script. Please download Z1+import-lammps.pl drom the scripts directory and overwrite Z1+import-lammps.pl you obtained from Mendeley with this latest version (before or after installing Z1+).  
+The original Z1+ code creating the shortest multiple disconnected path for the analysis of entanglements in macromolecular systems is available for download [here at mendeley](https://data.mendeley.com/datasets/m425t6xtwr/1). The file at Mendeley does not contain the latest version of the Z1+import-lammps.pl script. Please download Z1+import-lammps.pl drom the scripts directory and overwrite Z1+import-lammps.pl you obtained from Mendeley with this latest version (before or after installing Z1+). Or instead download the parallel Z1+ version from my own server (see next section). 
 
 The related publication describing all features is available for free [here at Comput. Phys. Commun.](https://www.sciencedirect.com/science/article/pii/S0010465522002867?via%3Dihub)
 
 Here we collect questions, answers, and additional scripts that may be useful for Z1+ users. 
 
-If you come across any problem during installing or testing Z1+, please be so kind to let me know, so that I can add the information for others to this site.  
+If you come across any problem during installing or testing Z1+, please be so kind to let me know, so that I can add the information for others to this site. 
+
+## Parallel version of the Z1+ code
+
+In 2026, I added three (optional) options to the existing Z1+ options 
+
+    1. -np=<number-of-cores>
+    2. -branched
+    3. -LeesEdwards
+
+All options are displayed as usual if Z1+ is called without any argument. 
+
+The first new option is useful if trajectory files with multiple frames are investigated. At any time of the process, multiple (np) frames are investigated simultaneously, without any speed loss due to parallelization.  
+
+The 2nd new option allows to study branched polymeric systems. Z1+ identifies linear strands between junctions and treats the whole system as a system made of linear chains. As this option requires bond information, it can only be used if starting from a lammps data file, or lammps data + lammps dump trajectory file, if the bond information remains unchanged during a trajectory run. 
+
+The 3rd new option is of interest if the original system was sheared in x-direction (gradient in y-direction). In that case -LeesEdwards adds the Lees-Edwards parameter (more information in the Z1+README.txt file) to the end of the Z1+SP.dat and Z1+initconfig.dat files (as well as to the PPA.dat file if the -PPA or -PPA+ options are chosen). The Lees-Edwards parameter is needed to calculate physical distances in the Z1+SP.dat file. 
+
+This version of the Z1+ code is not available from Mendeley, but available for download <a href="https://www.complexfluids.ethz.ch/MK/Z1+/CODE/Z1+2026.tar.gz">from my server</a>. Save Z1+2026.tar.gz in a new directory, uncompress it, check its content, unpack, and install Z1+ via 
+
+        gzip -d  Z1+2026.tar.gz;  # uncompress
+        tar -t -v -f Z1+2026.tar; # check content; 
+        tar -x -v -f Z1+2026.tar; # unpack 
+        perl ./Z1+install.pl;     # install
 
 ## How to extract linear backbones from fully atomistic LAMMPS models 
 
