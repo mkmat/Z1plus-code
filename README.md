@@ -10,7 +10,7 @@ If you come across any problem during installing or testing Z1+, please be so ki
 
 ## Parallel version of the Z1+ code
 
-In 2026, I added three (optional) options to the existing Z1+ options 
+In 2026, I added three options to the existing Z1+ options 
 
     1. -np=<number-of-cores>
     2. -branched
