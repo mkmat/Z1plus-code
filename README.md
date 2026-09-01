@@ -18,7 +18,7 @@ In 2026, I added three options to the existing Z1+ options
 
 All options are displayed as usual if Z1+ is called without any argument. 
 
-The first new option is useful if trajectory files with multiple frames are investigated. At any time of the process, multiple (np) frames are investigated simultaneously, without any speed loss due to parallelization.  
+The first new option is useful if trajectory files with multiple frames are investigated. At any time of the process, multiple (np) frames are investigated simultaneously, without any speed loss due to parallelization. The option can be used if you are calling Z1+ on an ordinary linux server with multiple cores. Another version of this extension for those running Z1+ on a compute cluster or HPC system with resource manager/job scheduler has still to be developed (feel invited to adjust Z1+parallel.pl and send it to me). 
 
 The 2nd new option allows to study branched polymeric systems. Z1+ identifies linear strands between junctions and treats the whole system as a system made of linear chains. As this option requires bond information, it can only be used if starting from a lammps data file, or lammps data + lammps dump trajectory file, if the bond information remains unchanged during a trajectory run. 
 
