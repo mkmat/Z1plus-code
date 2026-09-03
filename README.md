@@ -10,7 +10,7 @@ If you come across any problem during installing or testing Z1+, please be so ki
 
 ## Parallel version of the Z1+ code
 
-In 2026, I added three options to the existing Z1+ options 
+In 2026, I added three options to the existing Z1+ options, while the existing Z1+ functionality remained unchanged. 
 
     1. -np=<number-of-cores>
     2. -branched
@@ -18,13 +18,22 @@ In 2026, I added three options to the existing Z1+ options
 
 All options are displayed as usual if Z1+ is called without any argument. 
 
-The first new option is useful if trajectory files with multiple frames are investigated. At any time of the process, multiple (np) frames are investigated simultaneously, without any speed loss due to parallelization. The option can be used if you are calling Z1+ on an ordinary linux server with multiple cores. Another version of this extension for those running Z1+ on a compute cluster or HPC system with resource manager/job scheduler has still to be developed (feel invited to adjust Z1+parallel.pl and send it to me). 
+1. The first new option is useful if trajectory files with multiple frames are investigated. At any time of the process, multiple (np) frames are investigated simultaneously, without any speed loss due to parallelization. The option can be used directly if you are calling Z1+ on an ordinary linux server with multiple cores via
 
-The 2nd new option allows to study branched polymeric systems. Z1+ identifies linear strands between junctions and treats the whole system as a system made of linear chains. As this option requires bond information, it can only be used if starting from a lammps data file, or lammps data + lammps dump trajectory file, if the bond information remains unchanged during a trajectory run. 
+         perl Z1+ -np=<number-of-cores> [other options] <configuration-file>
 
-The 3rd new option is of interest if the original system was sheared in x-direction (gradient in y-direction). In that case -LeesEdwards adds the Lees-Edwards parameter (more information in the Z1+README.txt file) to the end of the Z1+SP.dat and Z1+initconfig.dat files (as well as to the PPA.dat file if the -PPA or -PPA+ options are chosen). The Lees-Edwards parameter is needed to calculate physical distances in the Z1+SP.dat file. 
+In case you start Z1+ from a HPC system with resource manager/job scheduler such as SLURM, then set
 
-This version of the Z1+ code is not available from Mendeley, but available for download <a href="https://www.complexfluids.ethz.ch/MK/Z1+/CODE/Z1+2026.tar.gz">here from my server</a>. Save Z1+2026.tar.gz in a new directory, uncompress it, check its content, unpack, and install Z1+ via 
+        #SBATCH --nodes=1
+        #SBATCH --ntasks=1
+        #SBATCH --cpus-per-task=<number-of-cores>
+        perl Z1+ -np=<number-of-cores> [other options]
+
+4. The 2nd new option allows to study branched polymeric systems. Z1+ identifies linear strands between junctions and treats the whole system as a system made of linear chains. As this option requires bond information, it can only be used if starting from a lammps data file, or lammps data + lammps dump trajectory file, if the bond information remains unchanged during a trajectory run. 
+
+5. The 3rd new option is of interest if the original system was sheared in x-direction (gradient in y-direction). In that case -LeesEdwards adds the Lees-Edwards parameter (more information in the Z1+README.txt file) to the end of the Z1+SP.dat and Z1+initconfig.dat files (as well as to the PPA.dat file if the -PPA or -PPA+ options are chosen). The Lees-Edwards parameter is needed to calculate physical distances in the Z1+SP.dat file. 
+
+This 2026 version of the Z1+ code is not available from Mendeley, but available for download <a href="https://www.complexfluids.ethz.ch/MK/Z1+/CODE/Z1+2026.tar.gz">here from my server</a>. Save Z1+2026.tar.gz in a new directory, uncompress it, check its content, unpack, and install Z1+ via 
 
         gzip -d  Z1+2026.tar.gz;  # uncompress
         tar -t -v -f Z1+2026.tar; # check content; 
