@@ -22,7 +22,7 @@ All options are displayed as usual if Z1+ is called without any argument.
 
          perl Z1+ -np=<number-of-cores> [other options] <configuration-file>
 
-In case you start Z1+ from a HPC system with resource manager/job scheduler such as SLURM, then set
+    In case you start Z1+ from a HPC system with resource manager/job scheduler such as SLURM, then set
 
         #SBATCH --nodes=1
         #SBATCH --ntasks=1
